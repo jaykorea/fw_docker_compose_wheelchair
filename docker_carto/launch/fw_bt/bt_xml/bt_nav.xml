@@ -1,0 +1,20 @@
+<root main_tree_to_execute = "MainTree">
+    <BehaviorTree ID="MainTree">
+        <Sequence>
+            <Fallback>
+                <ReactiveSequence>
+                    <Action ID="WaitForGoal" name="wait_for_goal" goal_out="{target_pose}"/>                 
+                </ReactiveSequence>
+                <Sequence>
+					<SubTree ID="MoveRobot" target="{target_pose}" />
+				</Sequence>
+            </Fallback>
+        </Sequence>
+    </BehaviorTree>
+
+    <BehaviorTree ID="MoveRobot">
+        <Sequence name="SetGoal">
+            <MoveBase goal="{target}" />
+        </Sequence>
+    </BehaviorTree>
+</root>

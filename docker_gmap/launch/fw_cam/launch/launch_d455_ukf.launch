@@ -1,0 +1,57 @@
+ 
+<launch>
+
+    <include file="$(find realsense2_camera)/launch/d400.launch">
+      <arg name="camera" value="d400"/>
+      <arg name="serial_no_camera" value="213522254416"/>
+      <arg name="initial_reset" value="true"/>
+      <arg name="align_depth" value="true"/>
+      <arg name="enable_sync" value="true"/>
+      <arg name="clip_distance" value="-2"/>
+      <arg name="linear_accel_cov" value="1.0"/>
+      <arg name="unite_imu_method" value="linear_interpolation"/>
+      <arg name="enable_gyro"   value="true"/>
+      <arg name="enable_accel"  value="true"/>
+      <!-- <arg name="enable_infra1" value="true"/>
+      <arg name="enable_infra2" value="true"/> -->
+
+      <!-- <arg name="filters" value="disparity,spatial,temporal,decimation"/> -->
+    </include>
+
+    <node pkg="imu_filter_madgwick" type="imu_filter_node" name="ImuFilter">
+        <param name="use_mag" type="bool" value="false" />
+        <param name="publish_tf" type="bool" value="false" />
+        <param name="world_frame" type="string" value="enu" />
+        <remap from="/imu/data_raw" to="/d400/imu"/>
+    </node>
+
+    <include file="$(find robot_localization)/launch/ukf_template.launch"/>
+    <param name="/ukf_se/frequency" value="300"/>
+    <param name="/ukf_se/base_link_frame" value="base_footprint"/>
+    <param name="/ukf_se/odom0" value="/odom_md"/>
+    <rosparam param="/ukf_se/odom0_config">[false, false, false,
+                                            false, false, false,
+                                            true,  true,  false,
+                                            false, false, true,
+                                            false, false, false,]
+    </rosparam>
+    <param name="/ukf_se/odom0_relative" value="true"/>
+    <param name="/ukf_se/odom0_pose_rejection_threshold" value="10000000"/>
+    <param name="/ukf_se/odom0_twist_rejection_threshold" value="10000000"/>
+
+    <param name="/ukf_se/imu0" value="/imu/data"/>
+    <rosparam param="/ukf_se/imu0_config">[false, false, false,
+                                           false, false, false,
+                                           false, false, false,
+                                           false, false, true,
+                                           true,  false, false,]
+    </rosparam>
+    <param name="/ukf_se/imu0_differential" value="true"/>
+    <param name="/ukf_se/imu0_relative" value="false"/>
+    <param name="/ukf_se/use_control" value="false"/>
+    <!-- <param name="/ukf_se/odom0_config" value="{true,true,true,}"/> -->    
+
+
+    <!-- <node pkg="tf2_ros" type="static_transform_publisher" name="d400_link_to_base_link" args="0.008 -0.0115 0.059 0 0 0 base_link d400_link"/> -->
+
+</launch>

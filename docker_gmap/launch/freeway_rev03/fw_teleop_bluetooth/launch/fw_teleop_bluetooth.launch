@@ -1,0 +1,5 @@
+<launch>
+  <node pkg="fw_teleop_bluetooth" type="fw_teleop_bluetooth.py" name="fw_bluetooth_node"  output="screen">
+  </node>
+</launch>
+

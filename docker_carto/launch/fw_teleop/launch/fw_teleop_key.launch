@@ -1,0 +1,6 @@
+<launch>
+  <node pkg="fw_rev_04_teleop" type="fw_teleop_key.py" name="fw_teleop_node"  output="screen">
+  </node>
+</launch>
+
+

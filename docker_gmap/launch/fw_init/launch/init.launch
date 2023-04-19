@@ -1,0 +1,3 @@
+<launch>
+        <node pkg="fw_rev_04_init" type="launch.sh" name="run_script" output="screen"/>
+</launch>

@@ -1,0 +1,21 @@
+<root main_tree_to_execute = "MainTree">
+    <BehaviorTree ID="MainTree">
+        <Sequence>
+            <SetBlackboard output_key="home" value="4;-1.253;0.0;1.0" />
+            <Fallback>
+                <RetryUntilSuccessful>
+                    <WaitForGoal goal_out="{target}"/>
+                </RetryUntilSuccessful>
+                <Sequence>
+                    <SubTree ID="MoveRobot" target="{target}" />
+                </Sequence>
+            </Fallback>
+        </Sequence>
+    </BehaviorTree>
+
+    <BehaviorTree ID="MoveRobot">
+        <Sequence name="SetGoal">
+            <MoveBase goal="{target}" />
+        </Sequence>
+    </BehaviorTree>
+</root>

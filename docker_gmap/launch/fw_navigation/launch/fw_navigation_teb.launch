@@ -1,0 +1,22 @@
+<launch>
+  <!-- Arguments -->
+  <arg name="map_file" default="/robot/map/map.yaml"/>
+  <arg name="open_rviz" default="true"/>
+
+  <!-- Map server -->
+  <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)"/>
+
+  <!-- AMCL -->
+  <include file="$(find fw_rev_04_navigation)/launch/fw_amcl.launch"/>
+
+  <!-- move_base -->
+  <!-- <include file="$(find fw_rev_04_navigation)/launch/fw_move_base_flex.launch">
+  </include> -->
+
+  <!-- rviz -->
+  <group if="$(arg open_rviz)"> 
+    <node pkg="rviz" type="rviz" name="rviz" required="true"
+          args="-d $(find fw_rev_04_navigation)/rviz/fw_navigation_teb.rviz"/>
+  </group>
+
+</launch>

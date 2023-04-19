@@ -1,0 +1,20 @@
+<launch>
+  <!-- Arguments -->
+  <arg name="slam_methods" default="cartographer" doc="slam type [gmapping, cartographer, hector, karto, frontier_exploration]"/>
+  <arg name="configuration_basename" default="fw_rev_04_map.lua"/>
+  <arg name="open_rviz" default="true"/>
+
+  <!-- SLAM: Gmapping, Cartographer, Hector, Karto, Frontier_exploration, RTAB-Map -->
+  <include file="$(find fw_rev_04_slam)/launch/fw_cartographer_map.launch">
+    <arg name="configuration_basename" value="$(arg configuration_basename)"/>
+  </include>
+
+  <!-- rviz -->
+  <group if="$(arg open_rviz)"> 
+    <node pkg="rviz" type="rviz" name="rviz" required="true"
+          args="-d $(find fw_rev_04_slam)/rviz/fw_cartographer.rviz"/>
+    <!-- <node pkg="rviz" type="rviz" name="rviz1" required="true"
+          args="-d $(find fw_rev_04_slam)/rviz/model.rviz"/> -->
+  </group>
+</launch>
+             

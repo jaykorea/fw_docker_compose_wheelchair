@@ -1,0 +1,4 @@
+<launch>
+  <node pkg="freeway_spk" type="fw_spk_flex.py" name="freeway_spk_node"  output="screen" respawn="false">
+  </node>
+</launch>

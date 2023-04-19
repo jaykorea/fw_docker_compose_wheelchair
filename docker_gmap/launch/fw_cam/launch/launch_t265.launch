@@ -1,0 +1,25 @@
+<launch>
+
+  <!-- <node name="odom_transform_node"  pkg="realsense2_camera"  type="odom_transform_node" output="screen"> </node> -->
+  <!-- <node pkg="fw_rev_04_cam" type="create_new_odom.py" name="create_new_odom" /> -->
+  <include file="$(find realsense2_camera)/launch/t265.launch">
+    <arg name="camera" value="t265"/>
+    <arg name="serial_no_camera" value="204422111318"/>
+    <arg name="initial_reset" value="false"/>
+    <arg name="topic_odom_in" value="/odom_md"/>
+    <arg name="calib_odom_file" value="$(find fw_rev_04_cam)/config/t256_config.json"/>
+    <arg name="publish_odom_tf"       value="true"/>
+    <arg name="publish_tf"            value="true"/>
+  </include>
+
+  <!-- <node pkg="tf2_ros" type="static_transform_publisher" name="t265_to_base" args="-0.14273 -0.0091 -0.5865 0 0 0 cam_T_pose_frame base_link" />
+  <node pkg="tf2_ros" type="static_transform_publisher" name="odom_to_camodom" args="0.14273 0.0091 0.5865 0 0 0 odom cam_T_odom_frame" /> -0.139626-->
+
+  <node pkg="tf2_ros" type="static_transform_publisher" name="t265_pose_frame_to_base_footprint" args="-0.321 0 -0.490369 0 0 0 t265_pose_frame base_footprint" />
+  <node pkg="tf2_ros" type="static_transform_publisher" name="odom_to_t265_odom_frame" args="0.321 0.01 0.490369 0 0 0 odom t265_odom_frame" />
+
+  <!-- <node pkg="tf2_ros" type="static_transform_publisher" name="base_footprint_to_t265_pose_frame" args="0.321 0 0.490369 0 -0.1215 0 base_footprint t265_pose_frame" /> -->
+
+</launch>
+
+<!-- 0.202 0 0.105  / 0.145 0.01 0.37  // -> 0.347 0.01 0.475 rotation rad 0.139626 -->

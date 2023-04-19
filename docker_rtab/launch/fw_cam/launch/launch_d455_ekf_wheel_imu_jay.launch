@@ -1,0 +1,204 @@
+ 
+<launch>
+
+    <arg name="frame_id"                default="base_footprint" />
+    <arg name="imu_topic"               default="/imu/data" />
+    <arg name="imu_ignore_acc"          default="false" />
+    <arg name="imu_remove_gravitational_acceleration" default="true" />
+    <arg name="boolean"                 default="true"/>
+    <arg name="initial_reset"           default="false"/>
+
+    <include file="$(find realsense2_camera)/launch/d400.launch">
+      <arg name="camera" value="d455_L"/>
+      <arg name="serial_no_camera" value="213522254416"/>
+      <arg name="initial_reset" value="$(arg initial_reset)"/>
+      <arg name="align_depth" value="true"/>
+      <arg name="enable_sync" value="true"/>
+      <arg name="clip_distance" value="8"/>
+      <arg name="linear_accel_cov" value="1.0"/>
+      <arg name="unite_imu_method" value="linear_interpolation"/>
+      <arg name="gyro_fps"      value="-1"/>
+      <arg name="accel_fps"     value="-1"/>
+      <arg name="enable_gyro"   value="true"/>
+      <arg name="enable_accel"  value="true"/>
+      <arg name="publish_tf"    value="false"/>
+      <arg name="enable_infra"  value="false"/> -->
+      <!-- <arg name="enable_infra1" value="true"/>
+      <arg name="enable_infra2" value="true"/> -->
+      
+      <!-- <arg name="filters" value="disparity,spatial,temporal,decimation"/> -->
+    </include>
+
+
+    <!-- <include file="$(find realsense2_camera)/launch/d400.launch">
+      <arg name="camera" value="d455_L"/>
+      <arg name="serial_no_camera" value="213522254416"/>
+      <arg name="initial_reset" value="$(arg initial_reset)"/>
+      <arg name="align_depth" value="true"/>
+      <arg name="enable_sync" value="true"/>
+      <arg name="clip_distance" value="8"/>
+      <arg name="linear_accel_cov" value="1.0"/>
+      <arg name="unite_imu_method" value="linear_interpolation"/>
+      <arg name="gyro_fps"      value="200"/>
+      <arg name="accel_fps"     value="200"/>
+      <arg name="enable_gyro"   value="true"/>
+      <arg name="enable_accel"  value="true"/>
+      <arg name="publish_tf"    value="false"/>
+      <arg name="enable_infra"  value="false"/>
+      <arg name="enable_infra1" value="true"/>
+      <arg name="enable_infra2" value="true"/>
+      
+      <arg name="filters" value="disparity,spatial,temporal,decimation"/>
+    </include>     -->
+
+    <node pkg="imu_filter_madgwick" type="imu_filter_node" name="ImuFilter">
+        <param name="use_mag" type="bool" value="false" />
+        <param name="publish_tf" type="bool" value="false" />
+        <param name="world_frame" type="string" value="enu" />
+        <remap from="/imu/data_raw" to="/d455_L/imu"/>
+    </node>
+
+        <!-- Odometry fusion (EKF), refer to demo launch file in robot_localization for more info -->
+    <node if="$(arg boolean)" pkg="robot_localization" type="ekf_localization_node" name="ekf_localization" clear_params="true" required="true" output="screen">
+
+      <param name="frequency" value="50"/>
+      <param name="sensor_timeout" value="0.1"/>
+      <param name="two_d_mode" value="true"/>
+      <param name="publish_tf"  value="true"/>
+
+      <param name="odom_frame" value="odom_combined"/>
+      <param name="base_link_frame" value="$(arg frame_id)"/>
+      <param name="world_frame" value="odom_combined"/>
+
+      <param name="transform_time_offset" value="0.0"/>
+
+      <param name="odom0" value="/odom_md"/>
+      <!-- <param name="odom1" value="/vo"/> -->
+      <param name="imu0" value="$(arg imu_topic)"/> 
+
+      <!-- The order of the values is (1) x, y, z, //(2) roll, pitch, yaw, //(3) vx, vy, vz, //(4) vroll, vpitch, vyaw, //(5) ax, ay, az. -->
+      <rosparam param="odom0_config">[false, false, false,
+                                      false, false, false,
+                                      true,  true,  false,
+                                      false, false, true,
+                                      false, false, false]</rosparam>
+
+      <!-- <rosparam param="odom1_config">[true, true, true,
+                                      true, true, true,
+                                      false, false, false,
+                                      false, false, false,
+                                      false, false, false]</rosparam> -->
+
+      <rosparam     if="$(arg imu_ignore_acc)" param="imu0_config">[false, false, false,
+                                                                    false, false, true,
+                                                                    false, false, false,
+                                                                    true, true, true,
+                                                                    true,  false, false] </rosparam>
+      <rosparam unless="$(arg imu_ignore_acc)" param="imu0_config">[false, false, false,
+                                                                    false, false, true,
+                                                                    false, false, false,
+                                                                    false, false, true,
+                                                                    true,  false, false] </rosparam>  
+      
+      <param name="odom0_differential" value="false"/>
+      <!-- <param name="odom1_differential" value="true"/> -->
+      <param name="imu0_differential" value="false"/>
+
+      <param name="odom0_relative" value="false"/>
+      <!-- <param name="odom1_relative" value="false"/> -->
+      <param name="imu0_relative" value="false"/>
+
+      <param name="imu0_remove_gravitational_acceleration" value="$(arg imu_remove_gravitational_acceleration)"/>
+
+      <param name="print_diagnostics" value="true"/>
+
+      <!-- ======== ADVANCED PARAMETERS ======== -->
+      <param name="odom0_queue_size" value="20"/>
+      <!-- <param name="odom1_queue_size" value="30"/> -->
+      <param name="imu0_queue_size" value="100"/> 
+
+      <!-- The values are ordered as x, y, z, roll, pitch, yaw, vx, vy, vz,
+           vroll, vpitch, vyaw, ax, ay, az. -->
+      <rosparam param="process_noise_covariance">[0.005, 0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+                                                  0,    0.005, 0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+                                                  0,    0,    0.006, 0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+                                                  0,    0,    0,    0.003, 0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+                                                  0,    0,    0,    0,    0.003, 0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+                                                  0,    0,    0,    0,    0,    0.05, 0,     0,     0,    0,    0,    0,    0,    0,    0,
+                                                  0,    0,    0,    0,    0,    0,    0.0025, 0,     0,    0,    0,    0,    0,    0,    0,
+                                                  0,    0,    0,    0,    0,    0,    0,     0.0025, 0,    0,    0,    0,    0,    0,    0,
+                                                  0,    0,    0,    0,    0,    0,    0,     0,     0.004, 0,    0,    0,    0,    0,    0,
+                                                  0,    0,    0,    0,    0,    0,    0,     0,     0,    0.001, 0,    0,    0,    0,    0,
+                                                  0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0.001, 0,    0,    0,    0,
+                                                  0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0.02, 0,    0,    0,
+                                                  0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0.001, 0,    0,
+                                                  0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0.001, 0,
+                                                  0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0.0015]</rosparam>
+
+      <!-- The values are ordered as x, y,
+           z, roll, pitch, yaw, vx, vy, vz, vroll, vpitch, vyaw, ax, ay, az. -->
+           <rosparam param="initial_estimate_covariance">[1e-9, 0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
+                                                          0,    1e-9, 0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
+                                                          0,    0,    1e-9, 0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
+                                                          0,    0,    0,    1e-9, 0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
+                                                          0,    0,    0,    0,    1e-9, 0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
+                                                          0,    0,    0,    0,    0,    1e-9, 0,    0,    0,    0,     0,     0,     0,    0,    0,
+                                                          0,    0,    0,    0,    0,    0,    1e-9, 0,    0,    0,     0,     0,     0,    0,    0,
+                                                          0,    0,    0,    0,    0,    0,    0,    1e-9, 0,    0,     0,     0,     0,    0,    0,
+                                                          0,    0,    0,    0,    0,    0,    0,    0,    1e-9, 0,     0,     0,     0,    0,    0,
+                                                          0,    0,    0,    0,    0,    0,    0,    0,    0,    1e-9,  0,     0,     0,    0,    0,
+                                                          0,    0,    0,    0,    0,    0,    0,    0,    0,    0,     1e-9,  0,     0,    0,    0,
+                                                          0,    0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     1e-9,  0,    0,    0,
+                                                          0,    0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     1e-9, 0,    0,
+                                                          0,    0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    1e-9, 0,
+                                                          0,    0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    1e-9]</rosparam>
+
+    </node>
+
+    <!-- <include file="$(find robot_localization)/launch/ekf_template.launch"/>
+    <param name="/ekf_se/frequency" value="150"/>
+    <param name="/ekf_se/odom_frame" value="odom"/>
+    <param name="/ekf_se/publish_tf" value="false"/>
+    <param name="/ekf_se/base_link_frame" value="base_footprint"/>
+    <param name="/ekf_se/odom0" value="/odom_md"/>
+    <param name="/ekf_se/two_d_mode" value="true"/>
+    <rosparam param="/ekf_se/odom0_config">[false, false, false,
+                                            false, false, false,
+                                            true,  true,  false,
+                                            false, false, true,
+                                            false, false, false]
+    </rosparam>
+    <param name="/ekf_se/odom0_relative" value="true"/>
+    <param name="/ekf_se/odom0_pose_rejection_threshold" value="10000000"/>
+    <param name="/ekf_se/odom0_twist_rejection_threshold" value="10000000"/>
+
+    <param name="/ekf_se/imu0" value="/imu/data"/>
+    <rosparam param="/ekf_se/imu0_config">[false, false, false,
+                                           false, false, false,
+                                           false, false, false,
+                                           false, false, true,
+                                           true,  false, false]
+    </rosparam>
+    <param name="/ekf_se/imu0_differential" value="true"/>
+    <param name="/ekf_se/imu0_relative" value="false"/>
+    <param name="/ekf_se/use_control" value="false"/>
+    <rosparam param="ekf_se/process_noise_covariance">[0.05, 0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
+                                                        0.0,    0.05, 0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
+                                                        0.0,    0.0,    0.06, 0.0,    0.0,    0.0,    0.0,     0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
+                                                        0.0,    0.0,    0.0,    0.03, 0.0,    0.0,    0.0,     0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
+                                                        0.0,    0.0,    0.0,    0.0,    0.03, 0.0,    0.0,     0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
+                                                        0.0,    0.0,    0.0,    0.0,    0.0,    0.06, 0.0,     0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
+                                                        0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.025, 0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
+                                                        0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.10000, 0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
+                                                        0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.04, 0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
+                                                        0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,    0.01, 0.0,    0.0,    0.0,    0.0,    0.0,
+                                                        0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,    0.0,    0.01, 0.0,    0.0,    0.0,    0.0,
+                                                        0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,    0.0,    0.0,    0.002, 0.0,    0.0,    0.0,
+                                                        0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,    0.0,    0.0,    0.0,    0.001, 0.0,    0.0,
+                                                        0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.01, 0.0,
+                                                        0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.015]
+    </rosparam> -->
+    <!-- <param name="/ekf_se/odom0_config" value="{true,true,true,}"/> -->    
+    <!-- <node pkg="tf2_ros" type="static_transform_publisher" name="d400_link_to_base_link" args="0.008 -0.0115 0.059 0 0 0 base_link d400_link"/> -->
+
+</launch>

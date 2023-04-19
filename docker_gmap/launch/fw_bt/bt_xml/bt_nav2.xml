@@ -1,0 +1,27 @@
+<root main_tree_to_execute = "MainTree">
+    <BehaviorTree ID="MainTree">
+        <RetryUntilSuccessful num_attempts="-1">
+            <Sequence name="Main loop">
+                <SetBlackboard output_key="Home" value="0.259;-0.426;0.0;1.0" />
+                <Fallback>
+                    <Repeat num_cycles="-1">
+                        <Sequence>
+                            <Action ID="WaitForGoal" name="wait_for_goal" goal_out="{target_pose}"/>
+                            <Action ID="MoveBase"   name="SetGoal"  goal="{target_pose}"/>
+                            <ReactiveSequence>
+                                <WaitForOk ok_check="ok" />
+                            </ReactiveSequence>
+                            <SubTree ID="MoveRobot" target="Home"/>
+                        </Sequence>
+                    </Repeat>
+                </Fallback>
+            </Sequence>
+        </RetryUntilSuccessful>
+    </BehaviorTree>
+
+    <BehaviorTree ID="MoveRobot">
+        <Sequence name="SetGoal">
+            <MoveBase goal="{target}" />
+        </Sequence>
+    </BehaviorTree>
+</root>

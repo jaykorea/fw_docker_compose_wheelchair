@@ -1,0 +1,22 @@
+recovery_behaviors:
+  - name: 'conservative_reset'
+    type: 'clear_costmap_recovery/ClearCostmapRecovery'
+  - name: 'aggressive_reset'
+    type: 'clear_costmap_recovery/ClearCostmapRecovery'
+  - name: 'super_reset'
+    type: 'clear_costmap_recovery/ClearCostmapRecovery'
+
+conservative_reset:
+  reset_distance: 2.0
+  layer_names: [obstacle_2d_layer]
+
+aggressive_reset:
+  reset_distance: 6.0
+  layer_names: [obstacle_2d_layer]
+
+super_reset:
+  reset_distance: 0.0
+  layer_names: [obstacle_2d_layer]
+
+recovery_enabled: true # enable the move_base_flex recovery behaviors to attempt to clear out space
+recovery_behavior_enabled: true

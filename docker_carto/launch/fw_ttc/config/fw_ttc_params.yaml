@@ -1,0 +1,8 @@
+scan_topic: "scan_akusense"
+rp_lidar_s2: false # whether it is rplidar or else
+obstacle_count: 5
+signal_distance: 0.4 # default : 0.4
+signal_distance_teb: 0.45
+signal_release: 0.55 # default : 0.55
+angle_min: -1.623 # should correspond to the akusense driver launch parameter setting.
+angle_max: 1.623 # should correspond to the akusense driver launch parameter setting.

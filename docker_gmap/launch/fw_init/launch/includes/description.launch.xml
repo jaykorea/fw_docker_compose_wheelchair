@@ -1,0 +1,6 @@
+<launch>
+<arg name="urdf_file" default="$(find xacro)/xacro --inorder '$(find fw_rev_04_description)/urdf/fw_rev_04_jay.xacro'" />
+
+  <param  command="$(arg urdf_file)" name="robot_description" />
+</launch>
+

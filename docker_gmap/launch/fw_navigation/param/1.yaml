@@ -1,0 +1,86 @@
+TebLocalPlannerROS:
+
+ odom_topic: odometry/filtered
+ map_frame: map # map
+    
+ # Trajectory
+  
+ teb_autosize: True
+ dt_ref: 0.4
+ dt_hysteresis: 0.11
+ global_plan_overwrite_orientation: True # defualt : true
+ max_global_plan_lookahead_dist: 2.0 #default 2.0
+ feasibility_check_no_poses: 5
+ global_plan_viapoint_sep: -0.1
+ publish_feedback: True 
+ allow_init_with_backwards_motion: True
+
+ # Robot
+         
+ max_vel_x: 0.3 # default 0.25
+ max_vel_x_backwards: 0.15
+ max_vel_theta: 0.3 # default 0.45
+ acc_lim_x: 0.7 # default 0.5
+ acc_lim_theta: 0.5 # default : 0.4
+ min_turning_radius: 0
+ footprint_model: # types: "point", "circular", "two_circles", "line", "polygon"
+  type: "polygon" #"line"
+  vertices: [[-0.38, -0.28], [-0.38, 0.28], [0.18, 0.28], [0.18, -0.28]]
+   #radius: 0.2 # for type "circular"
+   #line_start: [-0.2, 0.0] # for type "line"
+   #line_end: [0.2, 0.0] # for type "line"
+   #front_offset: 0.2 # for type "two_circles"
+   #front_radius: 0.2 # for type "two_circles"
+   #rear_offset: 0.2 # for type "two_circles"
+   #rear_radius: 0.2 # for type "two_circles"
+   #vertices: [ [0.25, -0.05], [0.18, -0.05], [0.18, -0.18], [-0.19, -0.18], [-0.25, 0], [-0.19, 0.18], [0.18, 0.18], [0.18, 0.05], [0.25, 0.05] ] # for type "polygon"
+
+ # GoalTolerance
+    
+ xy_goal_tolerance: 0.45
+ yaw_goal_tolerance: 0.4
+ free_goal_vel: False
+    
+ # Obstacles
+    
+ min_obstacle_dist: 0.2 # This value must also include our robot radius, since footprint_model is set to "point" or "line".
+ include_costmap_obstacles: True
+ costmap_obstacles_behind_robot_dist: 0.5 #default : 1.0
+ obstacle_poses_affected: 30
+ costmap_converter_plugin: ""
+ costmap_converter_spin_thread: True
+ costmap_converter_rate: 5 # default : 5
+
+ # Optimization
+    
+ no_inner_iterations: 5
+ no_outer_iterations: 4
+ optimization_activate: True
+ optimization_verbose: False
+ penalty_epsilon: 0.1
+ weight_max_vel_x: 2
+ weight_max_vel_theta: 1
+ weight_acc_lim_x: 1
+ weight_acc_lim_theta: 1
+ weight_kinematics_nh: 1000
+ weight_kinematics_forward_drive: 1
+ weight_kinematics_turning_radius: 1
+ weight_optimaltime: 1
+ weight_obstacle: 50
+#  weight_dynamic_obstacle: 10 # not in use yet
+#  alternative_time_cost: False # not in use yet
+
+ # Homotopy Class Planner
+
+ enable_homotopy_class_planning: False # I turned it of because of  #[ WARN] [1654158502.701863979]: Control loop missed its desired rate of 10.0000Hz... the loop actually took 0.1477 seconds
+ enable_multithreading: True
+ simple_exploration: False
+ max_number_classes: 4
+ roadmap_graph_no_samples: 15
+ roadmap_graph_area_width: 5
+ h_signature_prescaler: 0.5
+ h_signature_threshold: 0.1
+ obstacle_keypoint_offset: 0.1
+ obstacle_heading_threshold: 0.45
+ visualize_hc_graph: False
+

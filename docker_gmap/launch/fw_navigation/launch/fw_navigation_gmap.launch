@@ -1,0 +1,132 @@
+<launch>
+  <!-- Arguments -->
+  <arg name="map_file"                              default="/robot/map/gmap.yaml"/>
+  <arg name="open_rviz"                             default="false"/>
+  <arg name="multi_rgbd_and_obstacle_detection_"    default="true"/>
+  <arg name="multi_rgbd_"                           default="true"/>
+  <arg name="output"                                default="screen"/>
+  <arg name="clear_params"                          default="true"/>
+
+  <arg name="rgb_topic_l"                           default="/d455_L/color/image_raw"/>
+  <arg name="depth_topic_l"                         default="/d455_L/aligned_depth_to_color/image_raw"/>
+  <arg name="info_topic_l"                          default="/d455_L/color/camera_info"/>
+  <arg name="rgb_topic_r"                           default="/d455_R/color/image_raw"/>
+  <arg name="depth_topic_r"                         default="/d455_R/aligned_depth_to_color/image_raw"/>
+  <arg name="info_topic_r"                          default="/d455_R/color/camera_info"/>
+
+  <arg name="rgb_topic_l_d"                           default="/d455_L/color/image_raw/compressedDepth"/>
+  <arg name="depth_topic_l_d"                         default="/d455_L/aligned_depth_to_color/image_raw/compressedDepth"/>
+  <arg name="info_topic_l_d"                          default="/d455_L/color/camera_info"/>
+  <arg name="rgb_topic_r_d"                           default="/d455_R/color/image_raw/compressedDepth"/>
+  <arg name="depth_topic_r_d"                         default="/d455_R/aligned_depth_to_color/image_raw/compressedDepth"/>
+  <arg name="info_topic_r_d"                          default="/d455_R/color/camera_info"/>
+
+  <!-- Map server -->
+  <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)"/>
+
+  <!-- AMCL -->
+  <include file="$(find fw_rev_04_navigation)/launch/fw_amcl.launch"/>
+
+  <!-- rviz -->
+  <group if="$(arg open_rviz)"> 
+    <node pkg="rviz" type="rviz" name="rviz" required="true"
+          args="-d $(find fw_rev_04_navigation)/rviz/fw_navigation_teb.rviz"/>
+  </group>
+  <!-- camera -->
+
+ <group if="$(arg multi_rgbd_)">
+
+    <group ns="camera_r">
+     <node if="$(arg multi_rgbd_)" pkg="nodelet" type="nodelet" name="nodelet_manager1" args="manager"/>
+     <node if="$(arg multi_rgbd_)" pkg="nodelet" type="nodelet" name="rgbd_sync1" args="load rtabmap_ros/rgbd_sync nodelet_manager1">
+         <remap from="rgb/image"       to="$(arg rgb_topic_l)"/>
+         <remap from="depth/image"     to="$(arg depth_topic_l)"/>
+         <remap from="rgb/camera_info" to="$(arg info_topic_l)"/>
+       <param name="approx"          value="false"/>
+     </node>
+    </group>
+    <group ns="camera_l">
+     <node if="$(arg multi_rgbd_)" pkg="nodelet" type="nodelet" name="nodelet_manager2" args="manager"/>
+     <node if="$(arg multi_rgbd_)" pkg="nodelet" type="nodelet" name="rgbd_sync2" args="load rtabmap_ros/rgbd_sync nodelet_manager2">
+         <remap from="rgb/image"       to="$(arg rgb_topic_r)"/>
+         <remap from="depth/image"     to="$(arg depth_topic_r)"/>
+         <remap from="rgb/camera_info" to="$(arg info_topic_r)"/>
+       <param name="approx"          value="false"/>
+     </node>
+    </group>
+    
+    <node pkg="nodelet" type="nodelet" name="points_xyzrgb1" args="standalone rtabmap_ros/point_cloud_xyzrgb" clear_params="$(arg clear_params)" output="$(arg output)">
+    <!-- <remap from="rgb/image"         to="$(arg rgb_topic_l_d)"/>
+    <remap from="depth/image"       to="$(arg depth_topic_l_d)"/>
+    <remap from="rgb/camera_info"   to="$(arg info_topic_l_d)"/> -->
+    <remap from="rgbd_image"        to="/camera_r/rgbd_image"/>
+    <remap from="cloud"             to="/voxel_cloud_l" />
+
+    <param name="decimation"  type="double" value="3"/>
+    <param name="max_depth"   type="double" value="6"/>
+    <param name="roi_ratios"  type="string" value="0.0 0.0 0 0.0"/> <!-- Region of interest ratios [left, right, top, bottom] (e.g., "0 0 0 0.2" will cut 20% of the bottom of the image). -->
+    <param name="voxel_size"  type="double" value="0.05"/>
+    <param name="approx_sync" type="bool"   value="false"/>
+  </node>
+
+    <!-- <node pkg="nodelet" type="nodelet" name="nodelet_manager2" args="manager"/> -->
+    <node pkg="nodelet" type="nodelet" name="points_xyzrgb2" args="standalone rtabmap_ros/point_cloud_xyzrgb" clear_params="$(arg clear_params)" output="$(arg output)">
+     <!-- <remap from="rgb/image"         to="$(arg rgb_topic_r_d)"/>
+     <remap from="depth/image"       to="$(arg depth_topic_r_d)"/>
+     <remap from="rgb/camera_info"   to="$(arg info_topic_r_d)"/> -->
+     <remap from="rgbd_image"        to="/camera_l/rgbd_image"/>
+     <remap from="cloud"             to="/voxel_cloud_r" />
+
+     <param name="decimation"  type="double" value="3"/>
+     <param name="max_depth"   type="double" value="6"/>
+     <param name="roi_ratios"  type="string" value="0.0 0.0 0.0 0.0"/> <!-- Region of interest ratios [left, right, top, bottom] (e.g., "0 0 0 0.2" will cut 20% of the bottom of the image). -->
+     <param name="voxel_size"  type="double" value="0.05"/>
+     <param name="approx_sync" type="bool"   value="false"/>
+    </node>
+
+    <!-- <node pkg="nodelet" type="nodelet" name="nodelet_manager5" args="manager"/> -->
+    <node if="$(arg multi_rgbd_and_obstacle_detection_)" pkg="nodelet" type="nodelet" name="obstacles_detection1" args="standalone rtabmap_ros/obstacles_detection">
+     <remap from="cloud" to="/voxel_cloud_r"/>
+     <remap from="obstacles" to="/obstacle_cloud_r"/>
+     <remap from="ground"    to="/ground_r"/>
+     
+     <!-- <param name="min_cluster_size" type="int"  value="20"/> -->
+     <param name="frame_id" type="string" value="base_footprint"/>
+     <param name="map_frame_id" type="string" value="map"/>
+     <param name="wait_for_transform" type="bool" value="true"/>
+           <!-- all points below 50 cm are ground -->
+      <param name="Grid/MaxGroundHeight"      type="string" value="0.03"/>       
+      <!-- all points above 20 cm and below 2 m are obstacles -->
+      <param name="Grid/MaxObstacleHeight"    type="string" value="1.5"/>     
+      <param name="Grid/MinClusterSize"       type="int" value="5" />
+      <param name="Grid/NormalsSegmentation" type="string" value="true" />
+     <!-- <param name="min_cluster_size" type="int" value="20"/> -->
+    </node>
+
+    <!-- <node pkg="nodelet" type="nodelet" name="nodelet_manager6" args="manager"/> -->
+    <node if="$(arg multi_rgbd_and_obstacle_detection_)" pkg="nodelet" type="nodelet" name="obstacles_detection2" args="standalone rtabmap_ros/obstacles_detection">
+     <remap from="cloud" to="/voxel_cloud_l"/>
+     <remap from="obstacles" to="/obstacle_cloud_l"/>
+     <remap from="ground"    to="/ground_l"/>
+
+     <!-- <param name="min_cluster_size" type="int"  value="20"/> -->
+     <param name="frame_id" type="string" value="base_footprint"/>
+     <param name="map_frame_id" type="string" value="map"/>
+     <param name="wait_for_transform" type="bool" value="true"/>
+           <!-- all points below 50 cm are ground -->
+      <param name="Grid/MaxGroundHeight"      type="string" value="0.03"/>       
+      <!-- all points above 20 cm and below 2 m are obstacles -->
+      <param name="Grid/MaxObstacleHeight"    type="string" value="1.5"/>     
+      <param name="Grid/MinClusterSize"       type="int" value="5" />
+      <param name="Grid/NormalsSegmentation" type="string" value="true" />
+     <!-- <param name="min_cluster_size" type="int" value="20"/> -->
+    </node>
+  </group>
+
+</launch>
+
+
+
+
+
+

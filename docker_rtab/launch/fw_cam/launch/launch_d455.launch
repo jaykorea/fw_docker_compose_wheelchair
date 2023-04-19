@@ -1,0 +1,19 @@
+ 
+<launch>
+
+    <include file="$(find realsense2_camera)/launch/d400.launch">
+      <arg name="camera" value="d400"/>
+      <arg name="serial_no_camera" value="213522254416"/>
+      <arg name="initial_reset" value="false"/>
+      <arg name="align_depth" value="true"/>
+      <arg name="enable_sync" value="true"/>
+      <arg name="clip_distance" value="-2"/>
+      <arg name="linear_accel_cov" value="1.0"/>
+      <arg name="unite_imu_method" value="linear_interpolation"/>
+      <arg name="enable_gyro"   value="true"/>
+      <arg name="enable_accel"  value="true"/>
+      <!-- <arg name="filters" value="disparity,spatial,temporal,decimation"/> -->
+    </include>
+    <!-- <node pkg="tf2_ros" type="static_transform_publisher" name="t265_to_d400" args="0.008 -0.0115 0.059 0 0 0 t265_link d400_link"/> -->
+
+</launch>

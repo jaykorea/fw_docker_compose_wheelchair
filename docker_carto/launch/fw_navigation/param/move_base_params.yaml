@@ -1,0 +1,65 @@
+# planners:
+#   - name: RRTGlobalPlanner
+#     type: global_planner/RRTGlobalPlanner
+
+# controllers:
+#   - name: TebLocalPlannerROS
+#     type: teb_local_planner/TebLocalPlannerROS
+#base_global_planner: "global_planner/RRTGlobalPlanner"
+base_global_planner: "global_planner/GlobalPlanner"
+base_local_planner: "teb_local_planner/TebLocalPlannerROS"    
+
+controller_frequency: 20.0 # default : 10.0
+controller_patience: 0.0 #default : 15.0
+
+planner_frequency: 3.0 # default : 10.0
+planner_patience: 0.0 # should be both 5.0??
+
+shutdown_costmaps: true
+max_planning_retries: -1
+
+oscillation_timeout: 10.0
+oscillation_distance: 0.3
+
+# recovery_behaviors:
+#   # - name: 'conservative_reset'
+#   #   type: 'clear_costmap_recovery/ClearCostmapRecovery'
+#   - name: 'aggressive_reset'
+#     type: 'clear_costmap_recovery/ClearCostmapRecovery'
+#   # - name: 'super_reset'
+#   #   type: 'clear_costmap_recovery/ClearCostmapRecovery'
+#   # - name: 'clearing_rotation'
+#   #   type: 'rotate_recovery/RotateRecovery'
+#   # - name: 'move_slow_and_clear'
+#   #   type: 'move_slow_and_clear/MoveSlowAndClear'
+
+
+# # Use this parameter only when the default recovery behavior is used for move_base.
+# conservative_reset_dist: 3.0 #3.0,
+# # Whether to enable move_base recovery behavior to try to clear space.
+# recovery_behavior_enabled: true
+# # Whether the robot uses in-situ rotation to clean up the space, this parameter is only used when the default recovery behavior is used.
+# clearing_rotation_allowed: true
+
+recovery_behaviors:
+  - name: 'conservative_reset'
+    type: 'clear_costmap_recovery/ClearCostmapRecovery'
+  - name: 'aggressive_reset'
+    type: 'clear_costmap_recovery/ClearCostmapRecovery'
+  - name: 'super_reset'
+    type: 'clear_costmap_recovery/ClearCostmapRecovery'
+
+conservative_reset:
+  reset_distance: 3.0
+  layer_names: [obstacle_2d_layer, obstacle_3d_layer]
+
+aggressive_reset:
+  reset_distance: 4.0
+  layer_names: [obstacle_2d_layer, obstacle_3d_layer]
+
+super_reset:
+  reset_distance: 0.0
+  layer_names: [obstacle_2d_layer, obstacle_3d_layer]
+
+recovery_enabled: true
+clearing_rotation_allowed: false

@@ -1,0 +1,47 @@
+<launch>
+  <!-- Arguments -->
+  <arg name="cmd_vel_topic" default="/cmd_vel" />
+  <arg name="odom_topic" default="/odometry/filtered" />
+  <arg name="dt_flag" default="true"/>
+  <arg name="joy_flag" default="false"/>
+  <arg name="spk_flag" default="false"/>
+  <arg name="smooth_flag" default="false" />
+  
+  <!-- move_base -->
+  <node name="move_base_flex" pkg="mbf_costmap_nav" type="mbf_costmap_nav" required="true" output="screen">
+    <!-- <param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS" />
+    <param name="base_global_planner" value="global_planner/GlobalPlanner" /> -->
+    <!-- <param name="base_global_planner" value="global_planner/RRTGlobalPlanner"/> -->
+    <!-- <param name="base_global_planner" value="navfn/NavfnROS"/> -->
+    <!-- <param name="base_global_planner" value="rrt_star_global_planner/RRTStarPlanner"/> -->
+    <!-- <param name="base_global_planner" value="lattice_planner/TBPlanner"/> -->
+
+    <rosparam file="$(find fw_rev_04_navigation)/param/costmap_common_params_fw.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find fw_rev_04_navigation)/param/costmap_common_params_fw.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find fw_rev_04_navigation)/param/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find fw_rev_04_navigation)/param/global_costmap_params.yaml" command="load" />
+    <rosparam file="$(find fw_rev_04_navigation)/param/default_planner.yaml" command="load" />
+    <rosparam file="$(find fw_rev_04_navigation)/param/recovery_behaviors.yaml" command="load" />
+    <!-- <rosparam file="$(find fw_rev_04_navigation)/param/teb_local_planner_params_fw.yaml" command="load" /> -->
+    <!-- <rosparam file="$(find fw_rev_04_navigation)/param/global_planner_params.yaml" command="load" /> -->
+    <rosparam file="$(find fw_rev_04_navigation)/param/planners.yaml" command="load" />
+    <rosparam file="$(find fw_rev_04_navigation)/param/controllers.yaml" command="load" />
+    <rosparam file="$(find fw_rev_04_navigation)/param/mbf_costmap_nav.yaml" command="load" />
+    <!-- <rosparam file="$(find fw_rev_04_navigation)/param/global_planner_params_lattice.yaml" command="load" /> -->
+    <!-- <rosparam file="$(find fw_rev_04_navigation)/param/rrt_star_params.yaml" command="load" /> -->
+    <!-- <rosparam file="$(find fw_rev_04_navigation)/param/rrt_global_planner.yaml" command="load" /> -->
+    <remap from="cmd_vel" to="$(arg cmd_vel_topic)"/>
+    <remap from="odom" to="$(arg odom_topic)"/>
+  </node>
+
+  <node name="move_base_legacy_relay" pkg="mbf_costmap_nav" type="move_base_legacy_relay.py">
+      <!-- <rosparam file="$(find fw_rev_04_navigation)/param/move_base_flex_params.yaml" command="load" /> -->
+      <rosparam file="$(find fw_rev_04_navigation)/param/mbf_costmap_nav.yaml" command="load" />
+      <rosparam file="$(find fw_rev_04_navigation)/param/default_planner.yaml" command="load" />
+  </node>
+
+  <node if="$(arg dt_flag)" pkg="distancetime_calculator" type="distancetime_calculator_flex_node" name="distancetime_calculator_flex_node"  output="screen" respawn="false"/>
+  <node if="$(arg joy_flag)" pkg="freeway_joy" type="freeway_joy_node" name="freeway_joy_node" output="screen" respawn="false"/>
+  <node if="$(arg spk_flag)" pkg="freeway_spk" type="fw_spk_flex.py" name="fw_spk_node" output="screen" respawn="false"/>
+  <include if="$(arg smooth_flag)" file="$(find yocs_velocity_smoother)/launch/standalone.launch"/>
+</launch>

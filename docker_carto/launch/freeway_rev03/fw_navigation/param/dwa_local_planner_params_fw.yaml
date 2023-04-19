@@ -1,0 +1,52 @@
+DWAPlannerROS:
+
+# Robot Configuration Parameters
+  max_vel_x: 0.3 #default : max_vel_x: 0.5
+  min_vel_x: -0.12 #default : min_vel_x: -0.15
+
+  max_vel_y: 0.0
+  min_vel_y: 0.0
+
+# The velocity when robot is moving in a straight line
+  # max_trans_vel:  0.28 #default : max_trans_x: 0.5
+  # min_trans_vel:  0.12 #default : min_trans_x: 0.12
+  max_vel_trans:  0.5 #default : max_trans_x: 0.5 ,0.4
+  min_vel_trans:  -0.12 #default : min_trans_x: 0.12 ,-0.4
+
+  max_rot_vel: 0.5 #default : max_rot_x: 1.50
+  min_rot_vel: 0.2 #default : min_rot_x: 0.50
+  # max_vel_theta: 0.40 #default : max_rot_x: 1.50 ,0.4
+  # min_vel_theta: -0.20 #default : min_rot_x: 0.50 ,0.2
+
+  acc_lim_x: 1.5 # default : 3.0
+  acc_lim_y: 0.0
+  acc_lim_theta: 0.55 # default : 1.20
+
+# Goal Tolerance Parametes
+  xy_goal_tolerance: 0.35
+  yaw_goal_tolerance: 0.20 # default 0.10
+  latch_xy_goal_tolerance: false
+
+# Forward Simulation Parameters
+  sim_time: 1.8
+  sim_granularity: 0.05 #default : 0.05
+  vx_samples: 20
+  vy_samples: 0
+  vtheta_samples: 40
+  controller_frequency: 10.0
+
+# Trajectory Scoring Parameters
+  path_distance_bias: 32.0 #32.0
+  goal_distance_bias: 20.0  #20.0
+  occdist_scale: 0.07
+  forward_point_distance: 0.325 #default : 0.325
+  stop_time_buffer: 0.4 #default 0.2
+  scaling_speed: 0.25
+  max_scaling_factor: 0.2
+
+# Oscillation Prevention Parameters
+  oscillation_reset_dist: 0.2
+
+# Debugging
+  publish_traj_pc : true
+  publish_cost_grid_pc: true

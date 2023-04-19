@@ -1,0 +1,64 @@
+ <launch>
+    <arg name="rviz" default="false"/>
+    <arg name="rtabmapviz" default="false"/>
+
+    <include file="$(find fw_rev_04_navigation)/launch/fw_move_base_teb.launch">
+    </include>
+
+    <include file="$(find fw_rev_04_rtabmap)/launch/rtabmap.launch">
+
+        <arg name="rtabmap_args"                        value="--delete_db_on_start"/>
+        <arg name="rtabmapviz"                          value="$(arg rtabmapviz)"/>
+        <arg name="rviz"                                value="$(arg rviz)"/>
+        <arg name="localization"                        value="false"/>
+        <arg name="publish_tf_odom"                     value="true"/>
+        
+        <arg name="odom_topic_rtabmap_ros_node"         value="/vo"/>
+        <arg name="odom_topic_visual_odometry_node"     value="/vo"/>
+        <arg name="odom_guess_frame_id"                 value="odom_combined"/>
+        <arg name="frame_id"                            value="base_footprint"/>
+        <arg name="rgbd_sync"                           value="true"/>
+
+        <arg name="depth_topic"                         value="/d455/aligned_depth_to_color/image_raw"/>
+        <arg name="rgb_topic"                           value="/d455/color/image_raw"/>
+        <arg name="camera_info_topic"                   value="/d455/color/camera_info"/>
+        
+
+        <arg name="approx_rgbd_sync"                    value="false"/>
+        <!-- <arg name="approx_sync"                         value="true"/> -->
+        <arg name="visual_odometry"                     value="true"/>
+        <arg name="stereo"                              value="true"/>
+        <arg name="scan_topic"                          value="/scan_rp_filtered"/>
+        <arg name="subscribe_scan"                      value="true"/>
+        <arg name="subscribe_rgbd"                      value="false"/>
+        <arg name="wait_imu_to_init"                    value="true"/>
+        <arg name="imu_topic"                           value="/imu/data"/>        
+        
+        <!-- Advances arguments -->     
+        <arg name="grid_maxgroundheight"                value="0.0"/>
+        <arg name="grid_maxobstacleheight"              value="1.5"/>
+        <arg name="grid_rangemax"                       value="4.0"/> 
+        <arg name="mem_use_odometry_gravity"            value="true"/>
+        <arg name="optimizer_gravity_sigma"             value="0.3"/>
+        <arg name="grid_from_depth"                     value="true"/>
+        <arg name="reg_force_3dof"                      value="true"/>
+        <arg name="reg_strategy"                        value="0"/>  
+        <arg name="rtabmap_detectionrate"               value="5"/>
+        <arg name="rgbd_angularupdate"                  value="0.01"/>    <!-- Update map only if the robot is moving -->
+        <arg name="rgbd_linearupdate"                   value="0.01"/>    <!-- Update map only if the robot is moving -->
+        <arg name="vis_maxdepth"                        value="4.0"/>
+        <arg name="vis_mininliers"                      value="15"/>
+        <arg name="publish_null_when_lost"              value="false"/>
+        <arg name="odom_fillinfodata"                   value="true"/>
+        <arg name="vis_featuretype"                     value=""/> 
+        <arg name="odom_resetcountdown"                 value="0"/>
+        <arg name="odomf2m_maxsize"                     value=""/>
+        <arg name="kp_detectorstrategy"                 value=""/>
+        <arg name="odom_strategy"                       value=""/>
+        <arg name="rgbd_neighborlinkrefining"           value=""/>
+        <arg name="rgbd_proximitybyspace"               value=""/>
+        <arg name="rgbd_optimizefromgraphend"           value="false"/>
+
+    </include>
+
+</launch>

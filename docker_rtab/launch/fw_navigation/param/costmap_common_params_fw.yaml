@@ -1,0 +1,164 @@
+#max_obstacle_height: 2.0
+
+#obstacle_range: 4.5 #default 4.5
+#raytrace_range: 2.0
+
+#robot_radius: 0.24
+footprint: [[-0.34, -0.24], [-0.34, 0.24], [0.26, 0.24], [0.26, -0.24]]
+footprint_padding: 0.005
+
+
+map_topic: /map
+#subscribe_to_updates: true
+
+always_send_full_costmap: true
+map_type: costmap
+# inflation_radius: 0.4 #default 0.45
+# cost_scaling_factor: 10.58 #default : 2.0
+
+
+#For this example we'll configure the costmap in voxel-grid mode
+# map_type: costmap
+
+# #Voxel grid specific parameters
+# origin_z: 0.0
+# z_resolution: 0.5
+# z_voxels: 10
+# unknown_threshold: 9
+# mark_threshold: 0
+# publish_voxel_map: true
+
+# observation_sources: rgbd_l rgbd_r scan_rp
+# # obstacle_cloud: {sensor_frame: d400_link, data_type: PointCloud2, topic: /rtabmap/cloud_obstacles, marking: true, clearing: true}
+# # scan_merged: {sensor_frame: base_scan_rp_filtered, data_type: LaserScan, topic: /scan_multi, marking: true, clearing: true}
+# rgbd_l: {sensor_frame: d455_R_depth_frame, data_type: PointCloud2, topic: /obstacle_cloud_r, marking: true, clearing: true,  obstacle_range: 4.0, min_obstacle_height: 0.02, max_obstacle_height: 0.7, raytrace_range: 5.0}
+# rgbd_r: {sensor_frame: d455_L_depth_frame, data_type: PointCloud2, topic: /obstacle_cloud_l, marking: true, clearing: true,  obstacle_range: 4.0, min_obstacle_height: 0.02, max_obstacle_height: 0.7, raytrace_range: 5.0}
+# # scan_filtered: {sensor_frame: base_scan_rp_filtered, data_type: LaserScan, topic: scan_rp_filtered, marking: true, clearing: true}
+# scan_rp: {sensor_frame: base_scan, data_type: LaserScan, topic: scan_rp, marking: true, clearing: true, obstacle_range: 6.0, raytrace_range: 10.0}
+# # scan_rp_filtered: {sensor_frame: base_scan_rp_filtered, data_type: LaserScan, topic: scan_rp_filtered, marking: true, clearing: true}
+# # merged_cloud: {sensor_frame: base_link, data_type: PointCloud, topic: merged_cloud, marking: true, clearing: true}
+plugins:
+     - {name: static_layer, type: "costmap_2d::StaticLayer"}
+     #- {name: obstacle_3d_layer, type: "spatio_temporal_voxel_layer/SpatioTemporalVoxelLayer"}d
+     - {name: obstacle_2d_layer,  type: "costmap_2d::ObstacleLayer"}
+     - {name: obstacle_3d_layer2, type: "costmap_2d::ObstacleLAyer"}
+     - {name: inflation_layer, type: "costmap_2d::InflationLayer"}
+    # - {name: local_inflation_layer, type: "costmap_2d::InflationLayer"}
+          
+
+static_layer:
+  enabled: true
+  map_topic: /map
+  subscribe_to_updates: true
+
+obstacle_3d_layer:
+  # enabled: true  
+  # max_obstacle_height: 0.7
+  # obstacle_range: 5.0  
+  # raytrace_range: 9.0  
+  # publish_voxel_map: false
+  # origin_z : 0.0
+  # z_resolution : 0.05
+  # z_voxels : 14
+  # footprint_clearing_enabled : True  
+  # observation_sources: rgbd_l rgbd_r
+
+  enabled:               true
+  voxel_decay:           10.0     #seconds if linear, e^n if exponential
+  decay_model:           0      #0=linear, 1=exponential, -1=persistent
+  voxel_size:            0.05   #meters
+  track_unknown_space:   true   #default space is unknown
+  observation_persistence: 0.0  #seconds
+  max_obstacle_height:   1.5    #meters
+  unknown_threshold:     15     #voxel height
+  mark_threshold:        0.0    #voxel height
+  update_footprint_enabled: true
+  combination_method:    1      #1=max, 0=override
+  obstacle_range:        4.0    #meters
+  origin_z:              0.0 #0.3115    #meters
+  publish_voxel_map:     true   # default off
+  transform_tolerance:   0.2    # seconds
+  mapping_mode:          false  # default off, saves map not for navigation
+  map_save_duration:     60     #default 60s, how often to autosave
+  observation_sources:   rgbd_l_mark rgbd_l_clear rgbd_r_mark rgbd_r_clear
+  rgbd_l_mark:
+    enabled : true
+    data_type: PointCloud2
+    topic: obstacle_cloud_l #voxel_cloud_l d455_L/
+    marking: true
+    clearing: false
+    min_obstacle_height: 0.0    #default 0, meters
+    max_obstacle_height: 1.5     #defaule 3, meters
+    expected_update_rate: 0.0    #default 0, if not updating at this rate at least, remove from buffer
+    observation_persistence: 0.0 #default 0, use all measurements taken during now-value, 0=latest 
+    inf_is_valid: false          #default false, for laser scans
+    clear_after_reading: true    #default false, clear the buffer after the layer gets readings from it
+    voxel_filter: false           #default off, apply voxel filter to sensor, recommend on
+    # fillter: "voxel"        # default passthrough, apply "voxel", "passthrough", or no filter to sensor data, recommend on  
+    voxel_min_points: 0          #default 0, minimum points per voxel for voxel filter
+  rgbd_l_clear:
+    data_type: PointCloud2
+    topic: obstacle_cloud_l
+    marking: false
+    clearing: true
+    max_z: 2.0                 # default 0, meters
+    min_z: 0.0                  # default 10, meters
+    vertical_fov_angle: 0.959931  # default 0.7, radians ,55deg now- > THIS Value is 55 deg
+    horizontal_fov_angle: 1.48353 # default 1.04, radians , 85deg now -> THIS Value is 85 deg
+    decay_acceleration: 15    # default 0, 1/s^2. If laser scanner MUST be 0
+    model_type: 0                # default 0, model type for frustum. 0=depth camera, 1=3d lidar like VLP16 or similar
+
+  rgbd_r_mark:
+    enabled : true
+    data_type: PointCloud2
+    topic: obstacle_cloud_r
+    marking: true
+    clearing: false
+    min_obstacle_height: 0.0     #default 0, meters
+    max_obstacle_height: 1.5     #defaule 3, meters
+    expected_update_rate: 0.0    #default 0, if not updating at this rate at least, remove from buffer
+    observation_persistence: 0.0 #default 0, use all measurements taken during now-value, 0=latest 
+    inf_is_valid: false          #default false, for laser scans
+    clear_after_reading: true    #default false, clear the buffer after the layer gets readings from it
+    voxel_filter: false           #default off, apply voxel filter to sensor, recommend on
+    # filter: "voxel"        # default passthrough, apply "voxel", "passthrough", or no filter to sensor data, recommend on 
+    voxel_min_points: 0         #default 0, minimum points per voxel for voxel filter
+  rgbd_r_clear:
+    data_type: PointCloud2
+    topic: obstacle_cloud_r
+    marking: false
+    clearing: true
+    max_z: 2.0                  # default 0, meters
+    min_z: 0.0                  # default 10, meters
+    vertical_fov_angle: 0.959931 # default 0.7, radians
+    horizontal_fov_angle: 1.48353 # default 1.04, radians
+    decay_acceleration: 15    # default 0, 1/s^2. If laser scanner MUST be 0
+    model_type: 0                # default 0, model type for frustum. 0=depth camera, 1=3d lidar like VLP16 or similar
+ 
+  
+  # rgbd_l: {sensor_frame: d455_L_depth_frame, data_type: PointCloud2, topic: /obstacle_cloud_l, marking: True, clearing: True, min_obstacle_height: 0.5, max_obstacle_height: 1.0, inf_is_valid: True}
+  # rgbd_r: {sensor_frame: d455_R_depth_frame, data_type: PointCloud2, topic: /obstacle_cloud_r, marking: True, clearing: True, min_obstacle_height: 0.5, max_obstacle_height: 1.0, inf_is_valid: True}
+
+obstacle_2d_layer:
+  enabled: true
+  track_unknown_space: false  
+  observation_sources: scan_rp_filtered
+  scan_rp_filtered: {sensor_frame: base_scan, data_type: LaserScan, topic: scan_rp_filtered, obstacle_range: 8.0, raytrace_range: 10.0, marking: True, clearing: True, min_obstacle_height: 0.03, max_obstacle_height: 1.5, inf_is_valid: True}
+
+obstacle_3d_layer2:
+  enabled: true
+  track_unkown_space: false
+  observation_sources: obstacle_cloud_r obstacle_cloud_l
+  obstacle_cloud_r: {sensor_fame: d455_R_color_optical_frame, data_type: PointCloud2, topic: obstacle_cloud_r, obstacle_range: 4.0, raytrace_range: 6.0, marking: True, clearing: True, min_obstacle_height: 0.05, max_obstacle_height: 1.5}
+  obstacle_cloud_l: {sensor_fame: d455_L_color_optical_frame, data_type: PointCloud2, topic: obstacle_cloud_l, obstacle_range: 4.0, raytrace_range: 6.0, marking: True, clearing: True, min_obstacle_height: 0.05, max_obstacle_height: 1.5}
+
+inflation_layer:
+  enabled: true
+  inflation_radius: 1.0
+  cost_scaling_factor: 5.58
+
+#local_inflation_layer:
+#  enabled: true
+#  inflation_radius: 0.7
+#  cost_scaling_factor: 7.58
+

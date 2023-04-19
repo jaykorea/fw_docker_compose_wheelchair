@@ -1,0 +1,27 @@
+<launch>
+  <!-- Arguments -->
+  <arg name="configuration_basename" default="fw_rev_04_map.lua"/>
+  <arg name="set_base_frame" default="base_footprint"/>
+  <arg name="set_odom_frame" default="odom_combined"/>
+  <arg name="set_map_frame"  default="map"/>
+  <arg name="open_rviz"      default="true"/>
+
+  <!-- Gmapping -->
+  <node pkg="gmapping" type="slam_gmapping" name="fw_gmapping" output="screen">
+    <remap from="scan"       to="scan_rp_filtered"/>
+    <param name="base_frame" value="$(arg set_base_frame)"/>
+    <param name="odom_frame" value="$(arg set_odom_frame)"/>
+    <param name="map_frame"  value="$(arg set_map_frame)"/>
+    <rosparam command="load" file="$(find fw_rev_04_slam)/config/gmap_params.yaml" />
+  </node>
+
+  <!-- rviz -->
+  <group if="$(arg open_rviz)"> 
+    <node pkg="rviz" type="rviz" name="rviz_map" required="true"
+          args="-d $(find fw_rev_04_slam)/rviz/fw_cartographer.rviz"/>
+    <!-- <node pkg="rviz" type="rviz" name="rviz1" required="true"
+          args="-d $(find fw_rev_04_slam)/rviz/model.rviz"/> -->
+  </group>
+
+</launch>
+             

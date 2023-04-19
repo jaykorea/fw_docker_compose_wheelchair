@@ -1,0 +1,56 @@
+#########################
+### Static Parameters ###
+#########################
+robot_frame: base_footprint # the frame of the robot, which will be used to determine its position
+map_frame: map # the global frame the robot is controlling in
+force_stop_at_goal: true # force move base flex to stop the robot once the goal is reached
+force_stop_on_cancel: true # force move base flex to stop the robot on navigation cancellation
+force_stop_on_retry: true
+mbf_tolerance_check: true # force move base flex to check for the goal tolerance
+dist_tolerance: 0.1 # distance tolerance to the given goal pose
+angle_tolerance: 0.2 # angle tolerance to the given goal pose
+tf_timeout: 1 # time before a timeout used for tf requests
+
+#################################################
+### Dynamically Reconfigurable MBF Parameters ###
+#################################################
+
+# Planners
+planners: # global planner, e.g. navfn/NavfnROS
+  - name: GlobalPlanner
+    type: global_planner/GlobalPlanner
+
+planner_frequency: 10.0 # the rate in Hz at which to run the planning loop
+planner_max_retries: -1 # how many times we will recall the planner in an attempt to find a valid plan before giving up
+planner_patience: 0.0 # how long the planner will wait in seconds in an attempt to find a valid plan before giving up
+
+# Controllers
+controllers: # list of controller, e.g. eband_local_planner/EBandPlannerROS
+  # - name: DWAPlannerROS
+  #   type: dwa_local_planner/DWAPlannerROS
+  # - name: LocalPlannerAdapter
+  #   type: nav_core_adapter::LocalPlannerAdapter
+  # - name: EBandPlannerROS
+  #   type: eband_local_planner/EBandPlannerROS
+   - name: TebLocalPlannerROS
+     type: teb_local_planner/TebLocalPlannerROS
+  # - name: MpcLocalPlannerROS
+  #   type: mpc_local_planner/MpcLocalPlannerROS
+
+controller_frequency: 12.0 # the rate in Hz at which to run the control loop and send velocity commands to the base
+controller_max_retries: -1 # how many times we will recall the controller in an attempt to find a valid command before giving up
+controller_patience: 0.0 # how long the controller will wait in seconds without receiving a valid control before giving up
+
+# Oscillation
+oscillation_timeout: 15.0 # how far in meters the robot must move to be considered not to be oscillating
+oscillation_distance: 0.2 # how long in seconds to allow for oscillation before executing recovery behaviors
+
+# Other
+recovery_enabled: true # enable the move_base_flex recovery behaviors to attempt to clear out space
+recovery_behavior_enabled: true
+clearing_rotation_allowed: false
+recovery_patience: 15.0 # how much time we allow recovery behaviors to complete before canceling (or stopping if cancel fails).
+restore_defaults: false # restore to the original configuration
+shutdown_costmaps: true # shutdown the costmaps of the node when move_base_flex is in an inactive state.
+clear_on_shutdown: true
+shutdown_costmaps_delay: 2.0 # how long in seconds to wait after last action before shutting down the costmaps.

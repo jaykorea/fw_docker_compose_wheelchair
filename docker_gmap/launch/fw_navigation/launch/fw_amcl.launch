@@ -1,0 +1,73 @@
+<launch>
+  <!-- Arguments -->
+  <arg name="scan_topic"     default="scan_rp_filtered"/>
+  <arg name="initial_pose_x" default="0.0"/>
+  <arg name="initial_pose_y" default="0.0"/>
+  <arg name="initial_pose_a" default="0.0"/>
+  <arg name="laser_odom_flag" default="false"/>
+
+  <!-- AMCL -->
+  <node pkg="amcl" type="amcl" name="amcl">
+    <remap from="initialpose" to="freeway/initialpose"/>
+    <remap from="amcl_pose"   to="freeway/localization_pose"/>
+    
+    <param name="min_particles"             value="500"/>
+    <param name="max_particles"             value="8000"/>
+    <param name="kld_err"                   value="0.02"/>
+    <param name="update_min_d"              value="0.01"/>
+    <param name="update_min_a"              value="0.05"/>
+    <param name="resample_interval"         value="2"/>
+    <param name="transform_tolerance"       value="0.9"/>
+    <param name="recovery_alpha_slow"       value="0.00"/>
+    <param name="recovery_alpha_fast"       value="0.00"/>
+    <rosparam command="load" file="$(find fw_rev_04_navigation)/config/initial_pose_params.yaml" />
+    <!-- <param name="initial_pose_x"            value="$(arg initial_pose_x)"/>
+    <param name="initial_pose_y"            value="$(arg initial_pose_y)"/>
+    <param name="initial_pose_a"            value="$(arg initial_pose_a)"/> -->
+    <param name="gui_publish_rate"          value="10.0"/>
+    <param name="use_map_topic"             value="true"/>
+
+    <remap from="scan"                      to="$(arg scan_topic)"/>
+    <!-- <remap from="odom"                      to="/odometry/filtered"/> -->
+    <param name="laser_min_range"           value="-1"/>
+    <param name="laser_max_range"           value="-1"/>
+    <param name="laser_max_beams"           value="120"/>
+    <param name="laser_z_hit"               value="0.5"/>
+    <param name="laser_z_short"             value="0.05"/>
+    <param name="laser_z_max"               value="0.05"/>
+    <param name="laser_z_rand"              value="0.5"/>
+    <param name="laser_sigma_hit"           value="0.2"/>
+    <param name="laser_lambda_short"        value="0.1"/>
+    <param name="laser_likelihood_max_dist" value="2.0"/>
+    <param name="laser_model_type"          value="likelihood_field"/>
+
+    <param name="odom_model_type"           value="diff-corrected"/> <!--diff-->
+    <param name="odom_alpha1"               value="0.02"/> <!--0.2-->
+    <param name="odom_alpha2"               value="0.02"/> <!--0.2-->
+    <param name="odom_alpha3"               value="0.01"/> <!--0.1-->
+    <param name="odom_alpha4"               value="0.01"/> <!--0.1-->
+    <param name="odom_alpha4"               value="0.02"/> <!--0.2-->
+    <param name="odom_frame_id"             value="odom_combined"/>
+    <param name="base_frame_id"             value="base_footprint"/>
+  </node>
+
+  <node if="$(arg laser_odom_flag)" pkg="rf2o_laser_odometry" type="rf2o_laser_odometry_node" name="rf2o_laser_odometry" output="screen">
+    <param name="laser_scan_topic" value="/scan_rp_filtered"/>        
+    <!-- topic where the lidar scans are being published -->
+    <param name="odom_topic" value="/odom_laser" />              
+    <!-- topic where tu publish the odometry estimations -->
+    <param name="publish_tf" value="false" />                   
+    <!-- wheter or not to publish the tf::transform (base->odom) -->
+    <param name="base_frame_id" value="base_footprint"/>            
+    <!-- frame_id (tf) of the mobile robot base. A tf transform from the laser_frame to the base_frame is mandatory -->
+    <param name="odom_frame_id" value="odom_combined" />                
+    <!-- frame_id (tf) to publish the odometry estimations     -->
+    <param name="init_pose_from_topic" value="" /> 
+    <!-- (Odom topic) Leave empty to start at point (0,0) -->
+    <param name="freq" value="3.0"/>                            
+    <!-- Execution frequency. -->
+    <param name="verbose" value="false" />                       
+    <!-- verbose -->
+  </node>
+  
+</launch>

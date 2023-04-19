@@ -1,0 +1,5 @@
+<launch>
+  <node pkg="fw_camera" type="fw_camera.py" name="fw_camera_node"  output="screen">
+  </node>
+</launch>
+

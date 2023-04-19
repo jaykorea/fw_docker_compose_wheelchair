@@ -1,0 +1,44 @@
+<launch>
+
+	<arg name="initial_reset" default="false"/>
+	<include file="$(find md)/launch/md.launch">
+	</include>
+	<!-- <include file="$(find fw_ahrs)/launch/fw_imu.launch">
+	</include> -->
+	<include file="$(find rplidar_ros)/launch/fw_rp_s2.launch">
+	</include>
+	<!-- <include file="$(find ydlidar)/launch/fw_yd.launch">
+	</include> -->
+	<!-- <include file="$(find rplidar_ros)/launch/fw_rp_a1.launch">
+	</include>
+	<include file="$(find ira_laser_tools)/launch/laserscan_multi_merger.launch">
+	</include> -->
+	<!--include file="$(find realsense2_camera)/launch/rs_camera.launch"-->
+	<!--/include-->
+
+	<include file="$(find fw_rev_04_init)/launch/fw_remote.launch">
+	</include>
+
+    <include file="$(find realsense2_camera)/launch/d400.launch">
+      <arg name="camera" value="d455_R"/>
+      <arg name="serial_no_camera" value="215122256758"/>
+      <arg name="initial_reset" value="$(arg initial_reset)"/>
+      <arg name="align_depth" value="true"/>
+      <arg name="enable_sync" value="true"/>
+      <arg name="clip_distance" value="8"/>
+      <arg name="linear_accel_cov" value="1.0"/>
+      <arg name="unite_imu_method" value="linear_interpolation"/>
+      <arg name="gyro_fps"      value="-1"/>
+      <arg name="accel_fps"     value="-1"/>
+      <arg name="enable_gyro"   value="false"/>
+      <arg name="enable_accel"  value="false"/>
+      <arg name="publish_tf"    value="false"/>
+      <arg name="enable_infra"  value="false"/>
+      <!-- <arg name="enable_infra1" value="true"/>
+      <arg name="enable_infra2" value="true"/> -->
+      
+
+      <!-- <arg name="filters" value="disparity,spatial,temporal,decimation"/> -->
+    </include>
+
+</launch>

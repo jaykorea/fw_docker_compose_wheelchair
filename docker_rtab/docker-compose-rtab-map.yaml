@@ -1,0 +1,221 @@
+version: "2"
+
+# networks:
+#   my-net:
+#     external: true
+#     name: my-net
+#   ros_net:
+#     driver: bridge
+#     ipam:
+#       driver: default
+#       config:
+#         - subnet: 192.168.0.0/24
+#           gateway: 192.168.0.1
+
+services:
+  ros_core_rtab:
+    image: jaykor97/freeway:rev.04_jay
+    container_name: ros_core_rtab
+    hostname: ros_core_rtab
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - driver: nvidia
+            count: 1
+            capabilities: [gpu]
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    environment:
+      - "NVIDIA_DRIVER_CAPABILITIES=all"
+      - "DISPLAY=$DISPLAY"
+      - "QT_X11_NO_MITSHM=1"
+      - "XAUTHORITY=/tmp/.docker.xauth"
+      - "ROS_HOSTNAME=192.168.0.11"
+      # - "ROS_IP=192.168.0.11"
+      - "ROS_MASTER_URI=http://192.168.0.11:11311"
+    volumes:
+      - "/dev:/dev"
+      - "~/docker_compose/docker_rtab/data:/data"
+      - "~/docker_compose/docker_rtab/map:/robot/map"
+      # - "~/docker_compose/docker_rtab/param:/robot/param"
+      - "~/docker_compose/docker_rtab/launch/fw_init:/home/freeway_rev04/src/fw_init"
+      - "~/docker_compose/docker_rtab/launch/fw_cam:/home/freeway_rev04/src/fw_cam"
+      - "~/docker_compose/docker_rtab/launch/fw_rtabmap:/home/freeway_rev04/src/fw_rtabmap"
+      - "~/docker_compose/docker_rtab/launch/fw_navigation:/home/freeway_rev04/src/fw_navigation"
+      # - "/tmp/argus_socket:/tmp/argus_socket"
+      #- "/tmp/.X11-unix/:/tmp/.X11-unix:rw"
+      #- "/tmp/.docker.xauth:/tmp/.docker.xauth:rw"
+    command: ["/bin/zsh", "-c", "source /opt/ros/melodic/setup.zsh; source ~/.zshrc; roscore;"]
+    # networks:
+    #   ros_net:
+    #     ipv4_address: 192.168.0.11
+        # my-net:
+      #   ipv4_address: 192.168.0.10
+    network_mode: host
+    # ipc: host
+    #restart: always
+
+  fw_init_rtab:
+    # build: ,,
+    image: jaykor97/freeway:rev.04_jay
+    container_name: fw_init_rtab
+    depends_on:
+        - ros_core_rtab
+    # networks:
+    #   ros_net:
+    #     ipv4_address: 192.168.0.11
+      # my-net:
+      #   ipv4_address: 192.168.0.10
+    network_mode: host
+    # ipc: host
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    privileged: true
+    environment:
+      - "ROS_HOSTNAME=192.168.0.11"
+      - "ROS_MASTER_URI=http://192.168.0.11:11311"
+    # command: zsh
+    volumes:
+      - "/dev:/dev"
+      - "~/docker_compose/docker_rtab/data:/data"
+      - "~/docker_compose/docker_rtab/map:/robot/map"
+      - "~/docker_compose/docker_carto/launch/freeway_rev03:/home/freeway_rev03/src/FREEWAY_AGX"
+      - "~/docker_compose/docker_rtab/launch/fw_init:/home/freeway_rev04/src/fw_init"
+      - "~/docker_compose/docker_rtab/launch/fw_cam:/home/freeway_rev04/src/fw_cam"
+      - "~/docker_compose/docker_rtab/launch/fw_rtabmap:/home/freeway_rev04/src/fw_rtabmap"
+      - "~/docker_compose/docker_rtab/launch/fw_navigation:/home/freeway_rev04/src/fw_navigation"
+    command: ["/bin/zsh", "-c", "source /root/.zshrc; roslaunch --wait fw_rev_04_init fw_robot.launch;"]
+
+  fw_cam_rtab:
+    # build: ,,
+    image: jaykor97/freeway:rev.04_jay
+    container_name: fw_cam_rtab
+    depends_on:
+        - ros_core_rtab
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t  
+    # networks:
+    #   ros_net:
+    #     ipv4_address: 192.168.0.12
+      # my-net:
+      #   ipv4_address: 192.168.0.10
+    network_mode: host
+    # ipc: host
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - driver: nvidia
+            count: 1
+            capabilities: [gpu]
+    privileged: true
+    environment:
+      - "NVIDIA_DRIVER_CAPABILITIES=all"
+      - "DISPLAY=$DISPLAY"
+      - "QT_X11_NO_MITSHM=1"
+      - "XAUTHORITY=/tmp/.docker.xauth"
+      - "ROS_HOSTNAME=192.168.0.11"
+      - "ROS_MASTER_URI=http://192.168.0.11:11311"
+    # command: zsh
+    volumes:
+      - "/dev:/dev"
+      - "~/docker_compose/docker_rtab/data:/data"
+      - "~/docker_compose/docker_rtab/map:/robot/map"
+      # - "~/docker_compose/docker_rtab/param:/robot/param"
+      - "~/docker_compose/docker_rtab/launch/fw_init:/home/freeway_rev04/src/fw_init"
+      - "~/docker_compose/docker_rtab/launch/fw_cam:/home/freeway_rev04/src/fw_cam"
+      - "~/docker_compose/docker_rtab/launch/fw_rtabmap:/home/freeway_rev04/src/fw_rtabmap"
+      - "~/docker_compose/docker_rtab/launch/fw_navigation:/home/freeway_rev04/src/fw_navigation"
+    command: ["/bin/zsh", "-c", "source /root/.zshrc; roslaunch --wait fw_rev_04_cam launch_d455_ekf_wheel_imu_jay.launch initial_reset:=false;"]
+
+  fw_rtabmap:
+    # build: ,,
+    image: jaykor97/freeway:rev.04_jay
+    container_name: fw_rtabmap
+    depends_on:
+        - ros_core_rtab
+    # networks:
+    #   ros_net:
+    #     ipv4_address: 192.168.0.14
+      # my-net:
+      #   ipv4_address: 192.168.0.10
+    network_mode: host
+    # ipc: host
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - driver: nvidia
+            count: 1
+            capabilities: [gpu]
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t    
+    privileged: true
+    environment:
+      - "NVIDIA_DRIVER_CAPABILITIES=all"
+      - "DISPLAY=$DISPLAY"
+      - "QT_X11_NO_MITSHM=1"
+      - "XAUTHORITY=/tmp/.docker.xauth"
+      - "ROS_HOSTNAME=192.168.0.11"
+      - "ROS_MASTER_URI=http://192.168.0.11:11311"
+      - "MAP_TYPE=$MAP_TYPE"
+      - "MAP_FILE=$MAP_FILE"
+      - "MAP_MODE=$MAP_MODE"
+    # command: zsh
+    volumes:
+      - "/dev:/dev"
+      - "~/docker_compose/docker_rtab/data:/data"
+      - "~/docker_compose/docker_rtab/map:/robot/map"
+      # - "~/docker_compose/docker_rtab/param:/robot/param"
+      - "~/docker_compose/docker_rtab/launch/fw_init:/home/freeway_rev04/src/fw_init"
+      - "~/docker_compose/docker_rtab/launch/fw_cam:/home/freeway_rev04/src/fw_cam"
+      - "~/docker_compose/docker_rtab/launch/fw_rtabmap:/home/freeway_rev04/src/fw_rtabmap"
+      - "~/docker_compose/docker_rtab/launch/fw_navigation:/home/freeway_rev04/src/fw_navigation"
+    command: ["/bin/zsh", "-c", "source /opt/ros/melodic/setup.zsh; source ~/.zshrc; roslaunch --wait fw_rev_04_rtabmap fw_mapping_stereo_test2_jay_2dlidar.launch grid_size:=50 grid_cellsize:=0.05 rviz:=false rtabmapviz:=false database_path:=/robot/map/${MAP_FILE}.db;"]
+
+  # fw_navigation:
+  #   # build: ,,
+  #   image: jaykor97/freeway:rev.04_jay
+  #   depends_on:
+  #       - ros_core_rtab
+  #   stdin_open: true # docker run -i
+  #   tty: true        # docker run -t    
+  #   # networks:
+  #   #   ros_net:
+  #   #     ipv4_address: 192.168.0.13
+  #     # my-net:
+  #     #   ipv4_address: 192.168.0.10
+  #   network_mode: host
+  #   # ipc: host
+  #   deploy:
+  #     resources:
+  #       reservations:
+  #         devices:
+  #         - driver: nvidia
+  #           count: 1
+  #           capabilities: [gpu]
+  #   privileged: true
+  #   environment:
+  #     - "NVIDIA_DRIVER_CAPABILITIES=all"
+  #     - "DISPLAY=$DISPLAY"
+  #     - "QT_X11_NO_MITSHM=1"
+  #     - "XAUTHORITY=/tmp/.docker.xauth"
+  #     # - "ROS_HOSTNAME=ros_core_rtab"
+  #     - "ROS_MASTER_URI=http://192.168.0.11:11311"
+  #   # command: zsh
+  #   volumes:
+  #     - "/dev:/dev"
+  #     - "~/docker_compose/docker_rtab/data:/data"
+  #     - "~/docker_compose/docker_rtab/map:/robot/map"
+  #     # - "~/docker_compose/docker_rtab/param:/robot/param"
+  #     - "~/docker_compose/docker_rtab/launch/fw_init:/home/freeway_rev04/src/fw_init"
+  #     - "~/docker_compose/docker_rtab/launch/fw_cam:/home/freeway_rev04/src/fw_cam"
+  #     - "~/docker_compose/docker_rtab/launch/fw_rtabmap:/home/freeway_rev04/src/fw_rtabmap"
+  #     - "~/docker_compose/docker_rtab/launch/fw_navigation:/home/freeway_rev04/src/fw_navigation"
+  #   command: ["/bin/zsh", "-c", "source /root/.zshrc; roslaunch --wait fw_rev_04_navigation fw_move_base_flex.launch;"]
+
+
+#export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/aarch64-linux-gnu/tegra
+
+
