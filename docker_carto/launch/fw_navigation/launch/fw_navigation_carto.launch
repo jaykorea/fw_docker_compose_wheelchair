@@ -1,9 +1,10 @@
 <launch>
   <!-- Arguments -->
   <arg name="map_file"                              default="/robot/map/carto.yaml"/>
+  <arg name="map_file_raw"                          default="/robot/map/carto_raw.yaml"/>
   <arg name="open_rviz"                             default="false"/>
   <arg name="multi_rgbd_and_obstacle_detection_"    default="true"/>
-  <arg name="multi_rgbd_"                           default="true"/>
+  <arg name="multi_rgbd_"                           default="false"/>
   <arg name="output"                                default="screen"/>
   <arg name="clear_params"                          default="true"/>
 
@@ -23,7 +24,10 @@
 
   <!-- Map server -->
   <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)"/>
-
+  <node pkg="map_server" name="map_server_raw" type="map_server" args="$(arg map_file_raw)">
+    <remap from="map" to="map_raw"/>
+  </node>
+  
   <!-- AMCL -->
   <include file="$(find fw_rev_04_navigation)/launch/fw_amcl.launch"/>
 

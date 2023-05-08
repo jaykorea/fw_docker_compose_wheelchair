@@ -1,6 +1,6 @@
 <launch>
   <!-- Arguments -->
-  <arg name="scan_topic"     default="/scan_rp_filtered"/>
+  <arg name="scan_topic"     default="scan_rp_filtered"/>
   <arg name="initial_pose_x" default="0.0"/>
   <arg name="initial_pose_y" default="0.0"/>
   <arg name="initial_pose_a" default="0.0"/>
@@ -12,9 +12,9 @@
     <remap from="amcl_pose"   to="freeway/localization_pose"/>
     
     <param name="min_particles"             value="500"/>
-    <param name="max_particles"             value="8000"/>
+    <param name="max_particles"             value="7000"/>
     <param name="kld_err"                   value="0.02"/>
-    <param name="update_min_d"              value="0.01"/>
+    <param name="update_min_d"              value="0.1"/>
     <param name="update_min_a"              value="0.05"/>
     <param name="resample_interval"         value="2"/>
     <param name="transform_tolerance"       value="0.9"/>
@@ -26,7 +26,7 @@
     <param name="initial_pose_a"            value="$(arg initial_pose_a)"/> -->
     <param name="gui_publish_rate"          value="10.0"/>
     <param name="use_map_topic"             value="true"/>
-
+    <remap from="map"                       to="map_raw"/>
     <remap from="scan"                      to="$(arg scan_topic)"/>
     <!-- <remap from="odom"                      to="/odometry/filtered"/> -->
     <param name="laser_min_range"           value="-1"/>
@@ -42,11 +42,10 @@
     <param name="laser_model_type"          value="likelihood_field"/>
 
     <param name="odom_model_type"           value="diff-corrected"/> <!--diff-->
-    <param name="odom_alpha1"               value="0.02"/> <!--0.2-->
-    <param name="odom_alpha2"               value="0.02"/> <!--0.2-->
-    <param name="odom_alpha3"               value="0.01"/> <!--0.1-->
-    <param name="odom_alpha4"               value="0.01"/> <!--0.1-->
-    <param name="odom_alpha4"               value="0.02"/> <!--0.2-->
+    <param name="odom_alpha1"               value="0.025"/> <!--0.02-->
+    <param name="odom_alpha2"               value="0.025"/> <!--0.02-->
+    <param name="odom_alpha3"               value="0.015"/> <!--0.01-->
+    <param name="odom_alpha4"               value="0.015"/> <!--0.01-->
     <param name="odom_frame_id"             value="odom_md_frame"/>
     <param name="base_frame_id"             value="base_footprint"/>
   </node>

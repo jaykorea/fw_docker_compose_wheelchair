@@ -7,8 +7,8 @@
 	</include> -->
 	<include file="$(find rplidar_ros)/launch/fw_rp_s2.launch">
 	</include>
-  <include file="$(find fitxxx)/launch/akusense_lidar.launch">
-  </include>
+  <!-- <include file="$(find fitxxx)/launch/akusense_lidar.launch">
+  </include> -->
 	<!-- <include file="$(find ydlidar)/launch/fw_yd.launch">
 	</include> -->
 	<!-- <include file="$(find rplidar_ros)/launch/fw_rp_a1.launch">
@@ -32,10 +32,14 @@
       <arg name="unite_imu_method" value="linear_interpolation"/>
       <arg name="gyro_fps"      value="-1"/>
       <arg name="accel_fps"     value="-1"/>
-      <arg name="enable_gyro"   value="false"/>
-      <arg name="enable_accel"  value="false"/>
+      <arg name="enable_gyro"   value="true"/>
+      <arg name="enable_accel"  value="true"/>
       <arg name="publish_tf"    value="false"/>
       <arg name="enable_infra"  value="false"/>
+      <arg name="color_width"   value="424"/>
+      <arg name="color_height"  value="240"/>
+      <arg name="depth_width"   value="424"/>
+      <arg name="depth_height"  value="240"/>
       <!-- <arg name="enable_infra1" value="true"/>
       <arg name="enable_infra2" value="true"/> -->
       

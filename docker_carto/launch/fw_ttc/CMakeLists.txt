@@ -10,6 +10,8 @@ project(fw_ttc)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   sensor_msgs
+  geometry_msgs
+  nav_msgs
   std_msgs
 )
 

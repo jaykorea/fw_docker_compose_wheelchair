@@ -1,0 +1,8 @@
+odom_topic: "odom_md" # odometry topic for calculating TTC.
+frequency: 30.0
+kp: 5.0
+ki: 2.0
+kd: 1.0
+ttc_desired: 10.0
+
+ttc_limit: 3.0 # default 2.0

@@ -2,7 +2,7 @@
 <launch>
 
     <arg name="frame_id"                default="base_footprint" />
-    <arg name="imu_topic"               default="/imu/data" />
+    <arg name="imu_topic"               default="/imu/data/cov_adj" />
     <arg name="imu_ignore_acc"          default="false" />
     <arg name="imu_remove_gravitational_acceleration" default="true" />
     <arg name="boolean"                 default="false"/>
@@ -19,10 +19,15 @@
       <arg name="unite_imu_method" value="linear_interpolation"/>
       <arg name="gyro_fps"      value="-1"/>
       <arg name="accel_fps"     value="-1"/>
-      <arg name="enable_gyro"   value="true"/>
-      <arg name="enable_accel"  value="true"/>
+      <arg name="enable_gyro"   value="false"/>
+      <arg name="enable_accel"  value="false"/>
       <arg name="publish_tf"    value="false"/>
       <arg name="enable_infra"  value="false"/>
+      <arg name="color_width"   value="424"/>
+      <arg name="color_height"  value="240"/>
+      <arg name="depth_width"   value="424"/>
+      <arg name="depth_height"  value="240"/>
+
       <!-- <arg name="enable_infra1" value="true"/>
       <arg name="enable_infra2" value="true"/> -->
       
@@ -55,7 +60,7 @@
         <param name="use_mag" type="bool" value="false" />
         <param name="publish_tf" type="bool" value="false" />
         <param name="world_frame" type="string" value="enu" />
-        <remap from="/imu/data_raw" to="/d455_L/imu"/>
+        <remap from="/imu/data_raw" to="/d455_R/imu"/>
     </node>
 
         <!-- Odometry fusion (EKF), refer to demo launch file in robot_localization for more info -->
@@ -83,10 +88,10 @@
                                       false, false, true,
                                       false, false, false]</rosparam>
 
-      <!-- <rosparam param="odom1_config">[true, true, true,
-                                      true, true, true,
+      <!-- <rosparam param="odom1_config">[false, false, false,
+                                      false, false, true,
                                       false, false, false,
-                                      false, false, false,
+                                      false, false, true,
                                       false, false, false]</rosparam> -->
 
       <rosparam     if="$(arg imu_ignore_acc)" param="imu0_config">[false, false, false,
@@ -95,7 +100,7 @@
                                                                     true, true, true,
                                                                     true,  false, false] </rosparam>
       <rosparam unless="$(arg imu_ignore_acc)" param="imu0_config">[false, false, false,
-                                                                    false, false, true,
+                                                                    false, false, false,
                                                                     false, false, false,
                                                                     false, false, true,
                                                                     false,  false, false] </rosparam>  
@@ -114,7 +119,7 @@
 
       <!-- ======== ADVANCED PARAMETERS ======== -->
       <param name="odom0_queue_size" value="10"/>
-      <!-- <param name="odom1_queue_size" value="30"/> -->
+      <!-- <param name="odom1_queue_size" value="5"/> -->
       <param name="imu0_queue_size" value="50"/> 
 
       <!-- The values are ordered as x, y, z, roll, pitch, yaw, vx, vy, vz,

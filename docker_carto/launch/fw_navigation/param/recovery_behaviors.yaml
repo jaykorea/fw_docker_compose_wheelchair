@@ -18,5 +18,5 @@ super_reset:
   reset_distance: 0.0
   layer_names: [obstacle_2d_layer]
 
-recovery_enabled: true # enable the move_base_flex recovery behaviors to attempt to clear out space
-recovery_behavior_enabled: true
+recovery_enabled: false # enable the move_base_flex recovery behaviors to attempt to clear out space
+recovery_behavior_enabled: false

@@ -10,10 +10,10 @@
         <param name = "MDT"              value = "183"/>
         <param name = "RMID"             value = "183"/>
         <param name = "halltype"         value = "8"/>
-        <param name = "maxrpm"           value = "5000"/>
+        <param name = "maxrpm"           value = "3000"/>
         <param name = "angleresolution"  value = "1"/>
-        <param name = "slowstart"        value = "650"/> <!-- 650 -->
-        <param name = "slowdown"         value = "500"/> <!-- 550 -->
+        <param name = "slowstart"        value = "75"/> <!-- 650 -->
+        <param name = "slowdown"         value = "20"/> <!-- 550 -->
     </node>
 
     <node pkg="md" type="vel_cmd_node" name="vel_cmd_node" output="screen" respawn="false">

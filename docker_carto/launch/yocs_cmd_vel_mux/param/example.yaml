@@ -1,0 +1,51 @@
+# Created on: Oct 29, 2012
+#     Author: jorge
+# Configuration for subscribers to cmd_vel sources. This file is provided just as an example.
+# Typically automatic controllers, as ROS navigation stack should have the minimum priority
+#
+# Used with example.launch
+#
+# Individual subscriber configuration:
+#   name:           Source name
+#   topic:          The topic that provides cmd_vel messages
+#   timeout:        Time in seconds without incoming messages to consider this topic inactive
+#   priority:       Priority: an UNIQUE unsigned integer from 0 (lowest) to MAX_INT 
+#   short_desc:     Short description (optional)
+
+subscribers:
+  # - name:        "e_stopo cmd_vel"
+  #   topic:       "/cmd_vel/emer"
+  #   timeout:     0.
+  #   priority:    0
+  #   short_desc:  "default e_stop controller"
+  - name:        "Navigation stack"
+    topic:       "/cmd_vel/nav/mux"
+    timeout:     0.5
+    priority:    0
+    short_desc:  "joystick controller"
+
+  - name:        "Joystick control"
+    topic:       "/cmd_vel/joy/mux"
+    timeout:     0.5
+    priority:    1
+    short_desc:  "joy controller"
+
+  - name:        "Teleop control"
+    topic:       "/cmd_vel/teleop/mux"
+    timeout:     0.5
+    priority:    2
+    short_desc:  "Keyboard teleop controller"
+
+  - name:        "emer control"
+    topic:       "/cmd_vel/emer/mux"
+    timeout:     2.0
+    priority:    3
+    short_desc:  "emer controller"
+
+  - name:        "super emer control"
+    topic:       "/cmd_vel/super_emer/mux"
+    timeout:     2.5
+    priority:    4
+    short_desc:  "super emer controller"
+
+publisher:       "/cmd_vel"

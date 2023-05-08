@@ -37,13 +37,14 @@ map_type: costmap
 # scan_rp: {sensor_frame: base_scan, data_type: LaserScan, topic: scan_rp, marking: true, clearing: true, obstacle_range: 6.0, raytrace_range: 10.0}
 # # scan_rp_filtered: {sensor_frame: base_scan_rp_filtered, data_type: LaserScan, topic: scan_rp_filtered, marking: true, clearing: true}
 # # merged_cloud: {sensor_frame: base_link, data_type: PointCloud, topic: merged_cloud, marking: true, clearing: true}
-plugins:
-     - {name: static_layer, type: "costmap_2d::StaticLayer"}
-     #- {name: obstacle_3d_layer, type: "spatio_temporal_voxel_layer/SpatioTemporalVoxelLayer"}d
-     - {name: obstacle_2d_layer,  type: "costmap_2d::ObstacleLayer"}
-     - {name: obstacle_3d_layer2, type: "costmap_2d::ObstacleLAyer"}
-     - {name: inflation_layer, type: "costmap_2d::InflationLayer"}
-    # - {name: local_inflation_layer, type: "costmap_2d::InflationLayer"}
+# plugins:
+#      - {name: static_layer, type: "costmap_2d::StaticLayer"}
+#      #- {name: obstacle_3d_layer, type: "spatio_temporal_voxel_layer/SpatioTemporalVoxelLayer"}d
+#      - {name: obstacle_2d_layer,  type: "costmap_2d::ObstacleLayer"}
+#      - {name: obstacle_3d_layer2, type: "costmap_2d::ObstacleLAyer"}
+#      - {name: obstacle_aku_layer, type: "costmap_2d::ObstacleLAyer"}
+#      - {name: global_inflation_layer, type: "costmap_2d::InflationLayer"}
+#      - {name: local_inflation_layer, type: "costmap_2d::InflationLayer"}
           
 
 static_layer:
@@ -143,7 +144,7 @@ obstacle_rp_layer:
   enabled: true
   track_unknown_space: false  
   observation_sources: scan_rp_filtered
-  scan_rp_filtered: {sensor_frame: base_scan, data_type: LaserScan, topic: scan_rp_filtered, obstacle_range: 4.0, raytrace_range: 5.0, marking: True, clearing: True, min_obstacle_height: 0.03, max_obstacle_height: 1.5, inf_is_valid: True}
+  scan_rp_filtered: {sensor_frame: base_scan, data_type: LaserScan, topic: scan_rp_filtered, obstacle_range: 6.0, raytrace_range: 5.0, marking: True, clearing: True, min_obstacle_height: 0.03, max_obstacle_height: 1.5, inf_is_valid: True}
 
 obstacle_aku_layer:
   enabled: true
@@ -161,10 +162,10 @@ obstacle_3d_layer2:
 global_inflation_layer:
   enabled: true
   inflation_radius: 1.25
-  cost_scaling_factor: 5.58
+  cost_scaling_factor: 8.58
 
 local_inflation_layer:
  enabled: true
  inflation_radius: 1.25
- cost_scaling_factor: 2.58
+ cost_scaling_factor: 8.58
 
