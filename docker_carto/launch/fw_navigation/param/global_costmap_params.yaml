@@ -5,9 +5,11 @@ global_costmap:
   #width: 25
   #height: 25
 
-  update_frequency: 2.001 # default : 10.0
-  publish_frequency: 2.001 # default : 10.0
+  update_frequency: 5.001 # default : 10.0
+  publish_frequency: 5.001 # default : 10.0
   transform_tolerance: 0.5 # default : 0.5
+
+  resolution: 0.025 #default 0.05
 
   #static_map: true
   rolling_window: false

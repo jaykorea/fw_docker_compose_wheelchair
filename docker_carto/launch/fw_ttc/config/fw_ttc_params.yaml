@@ -5,14 +5,14 @@ frequency: 30.0
 
 range_reversed: true # identify which LiDAR you use - specific lidar range data is reversed (e.g. rplidar).
 
-obstacle_deg: 3 # should satisfy at least 3 degree range data.
+obstacle_deg: 3 # should satisfy at least 3 degree range data for detect front_obstacle
 
 ttc_time: 2.5 # minimum TTC time.
 ttc_deg: 2 # should satisfy at least 2 degree range data.
 
-signal_distance: 0.35 # minimum distance for to detect front obstacle in (m).
-signal_distance_teb: 0.15 # minimum distance for TEB to detect front obstacle in (m).
-signal_release: 0.5 # release distance in (m).
+signal_distance: 0.4 # minimum distance for to detect front obstacle in (m).
+signal_distance_teb: 0.2 # minimum distance for TEB to detect front obstacle in (m).
+signal_release: 0.55 # release distance in (m).
 
 # angle_min: -3.14 # should correspond to the akusense driver launch parameter setting.
 # angle_max: 3.14 # should correspond to the akusense driver launch parameter setting.

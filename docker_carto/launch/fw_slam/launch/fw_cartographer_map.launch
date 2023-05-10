@@ -1,15 +1,18 @@
 <launch>
   <!-- Arguments -->
   <arg name="configuration_basename" default="fw_rev_04_map.lua"/>
+  <arg name="imu_topic" default="/imu"/>
+  <arg name="scan_topic" default="/scan" />
+  <arg name="odom_topic" default="/odom"/>
 
   <!-- cartographer_node -->
   <node pkg="cartographer_ros" type="cartographer_node" name="cartographer_node" 
         args="-configuration_directory $(find fw_rev_04_slam)/config
               -configuration_basename $(arg configuration_basename)"
         output="screen">
-    <remap from="/imu" to="/imu/data"/>
-    <remap from="/scan" to="/scan_rp_filtered" />
-    <remap from="/odom" to="/odometry/filtered"/>
+    <remap from="/imu" to="$(arg imu_topic)"/>
+    <remap from="/scan" to="$(arg scan_topic)" />
+    <remap from="/odom" to="$(arg odom_topic)"/>
     <!-- <remap from="/scan_2" to="/scan_rp_filtered" /> -->
     <!--remap from="points2" to="/camera/depth/color/points" /-->
   </node>

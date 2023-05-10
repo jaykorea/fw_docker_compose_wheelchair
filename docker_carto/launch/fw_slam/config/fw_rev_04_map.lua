@@ -7,8 +7,8 @@ options = {
   map_frame = "map",
   tracking_frame = "base_footprint", -- imu_link, d455_L_imu_optical_frame, If you are using gazebo, use 'base_footprint' (libgazebo_ros_imu's bug)
  
-  published_frame = "odom_combined",
-  odom_frame = "odom_combined",
+  published_frame = "odom_md_frame",
+  odom_frame = "odom_md_Frame",
   provide_odom_frame = false,
   publish_frame_projected_to_2d = false,
   use_odometry = false,

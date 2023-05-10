@@ -16,7 +16,7 @@ controllers:
 
 TebLocalPlannerROS:
   odom_topic: /odom_md
-  map_frame: odom_md_frame # map
+  map_frame: map # map
   stop_on_obstacle: true
      
   # Trajectory
@@ -33,11 +33,11 @@ TebLocalPlannerROS:
  
   # Robot
           
-  max_vel_x: 0.75 # default 0.65
+  max_vel_x: 0.75 # default 0.75
   max_vel_y: 0 # default 0.25
   max_vel_x_backwards: 0.25
-  max_vel_theta: 0.55 # default 0.55
-  acc_lim_x: 0.1 # default 0.5
+  max_vel_theta: 0.3 # default 0.55
+  acc_lim_x: 0.2 # default 0.1
   acc_lim_y: 0
   acc_lim_theta: 0.25 # 0.25 default : 0.35
   min_turning_radius: 0
@@ -64,9 +64,9 @@ TebLocalPlannerROS:
   divergence_detection_max_chi_squared: 75
  
   exact_arc_length: false
-  control_look_ahead_poses: 2 # default 3
+  control_look_ahead_poses: 3 # default 3
      
-  min_obstacle_dist: 0.15 # default : 0.15 This value must also include our robot radius, since footprint_model is set to "point" or "line".
+  min_obstacle_dist: 0.12 # default : 0.15 This value must also include our robot radius, since footprint_model is set to "point" or "line".
   inflation_dist: 3.5 # default = 0.5 , 0.15
   dynamic_obstacle_inflation_dist: 0.5
   include_costmap_obstacles: true
@@ -142,7 +142,7 @@ TebLocalPlannerROS:
   penalty_epsilon: 0.09
   weight_max_vel_x: 2
   weight_max_vel_theta: 1
-  weight_acc_lim_x: 2.0
+  weight_acc_lim_x: 1.0 # previous 2.0
   weight_acc_lim_theta: 1.0
   weight_kinematics_nh: 1000
   weight_kinematics_forward_drive: 750 # default 750

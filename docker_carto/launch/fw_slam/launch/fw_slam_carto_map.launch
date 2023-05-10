@@ -8,9 +8,9 @@
   <include file="$(find fw_rev_04_slam)/launch/fw_cartographer_map.launch">
     <arg name="configuration_basename" value="$(arg configuration_basename)"/>
 
-    <remap from="/imu" to="/flat/imu"/>
-    <remap from="/scan" to="/scan_rp_filtered" />
-    <remap from="/odom" to="/odometry/filtered"/>
+    <arg name="imu_topic"  value="/imu/data"/>
+    <arg name="scan_topic" value="/scan_rp_filtered" />
+    <arg name="odom_topic" value="/odom_md"/>
   </include>
 
   <!-- flat_world_imu_node -->

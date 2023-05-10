@@ -1,5 +1,6 @@
 <launch>
   <!-- Arguments -->
+  <arg name="move_base_flag" default="true"/>
   <arg name="cmd_vel_topic" default="/cmd_vel/nav" />
   <arg name="odom_topic" default="/odom_md" />
   <arg name="dt_flag" default="true"/>
@@ -15,7 +16,7 @@
   <arg name="imu_flag"  default="false"/>
   
   <!-- move_base -->
-  <node name="move_base_flex" pkg="mbf_costmap_nav" type="mbf_costmap_nav" required="true" output="screen">
+  <node if="$(arg move_base_flag)" name="move_base_flex" pkg="mbf_costmap_nav" type="mbf_costmap_nav" required="true" output="screen">
     <!-- <param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS" />
     <param name="base_global_planner" value="global_planner/GlobalPlanner" /> -->
     <!-- <param name="base_global_planner" value="global_planner/RRTGlobalPlanner"/> -->
@@ -41,7 +42,7 @@
     <remap from="odom" to="$(arg odom_topic)"/>
   </node>
 
-  <node name="move_base_legacy_relay" pkg="mbf_costmap_nav" type="move_base_legacy_relay.py">
+  <node if="$(arg move_base_flag)" name="move_base_legacy_relay" pkg="mbf_costmap_nav" type="move_base_legacy_relay.py">
       <!-- <rosparam file="$(find fw_rev_04_navigation)/param/move_base_flex_params.yaml" command="load" /> -->
       <rosparam file="$(find fw_rev_04_navigation)/param/mbf_costmap_nav.yaml" command="load" />
       <rosparam file="$(find fw_rev_04_navigation)/param/default_planner.yaml" command="load" />

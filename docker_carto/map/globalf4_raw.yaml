@@ -1,4 +1,4 @@
-image: /robot/map/globalf4.pgm
+image: /robot/map/globalf4_raw.pgm
 resolution: 0.025000
 origin: [0, 0, 0.000000]
 negate: 0

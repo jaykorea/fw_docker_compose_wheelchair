@@ -217,7 +217,7 @@ services:
       - "~/docker_compose/docker_carto/launch/fw_navigation:/home/freeway_rev04/src/fw_navigation"
       - "~/docker_compose/docker_carto/launch/yocs_velocity_smoother:/home/navigation_ws/src/navigation/yocs_velocity_smoother"
       - "~/docker_compose/docker_carto/launch/yocs_cmd_vel_mux:/home/navigation_ws/src/navigation/yocs_cmd_vel_mux"
-    command: ["/bin/zsh", "-c", "source /root/.zshrc; roslaunch --wait fw_rev_04_navigation fw_move_base_flex.launch;"]
+    command: ["/bin/zsh", "-c", "source /root/.zshrc; roslaunch --wait fw_rev_04_navigation fw_move_base_flex.launch move_base_flag:=true;"]
 
   fw_bt_carto:
     # build: ,,
