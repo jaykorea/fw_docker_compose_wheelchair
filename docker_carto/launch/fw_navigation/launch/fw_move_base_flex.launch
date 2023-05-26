@@ -1,19 +1,19 @@
 <launch>
   <!-- Arguments -->
-  <arg name="move_base_flag" default="true"/>
-  <arg name="cmd_vel_topic" default="/cmd_vel/nav" />
-  <arg name="odom_topic" default="/odom_md" />
+  <arg name="move_base_flag" default="true"/> <!-- -->
+  <arg name="cmd_vel_topic" default="/cmd_vel/nav" /> <!-- cmd_vel -->
+  <arg name="odom_topic" default="/odom_md" /> <!-- /odometry/filtered -->
   <arg name="dt_flag" default="true"/>
-  <arg name="ttc_flag" default="true"/>
+  <arg name="ttc_flag" default="false"/>
   <arg name="safety_flag" default="true"/>
-  <arg name="joy_flag" default="true"/>
+  <arg name="joy_flag" default="false"/>
   <arg name="spk_flag" default="false"/>
-  <arg name="serial_flag" default="true"/>
-  <arg name="smooth_flag" default="true"/>
-  <arg name="mux_flag" default="true"/>
-  <arg name="repub_flag"  default="false"/>s
+  <arg name="serial_flag" default="false"/>
+  <arg name="smooth_flag" default="false"/>
+  <arg name="mux_flag" default="false"/>
+  <arg name="repub_flag"  default="false"/>
   <arg name="rf2o_flag" default="false"/>
-  <arg name="imu_flag"  default="false"/>
+  <arg name="imu_flag"  default="true"/>
   
   <!-- move_base -->
   <node if="$(arg move_base_flag)" name="move_base_flex" pkg="mbf_costmap_nav" type="mbf_costmap_nav" required="true" output="screen">

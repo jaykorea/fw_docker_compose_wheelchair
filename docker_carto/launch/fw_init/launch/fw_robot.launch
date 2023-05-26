@@ -1,6 +1,12 @@
 <launch>
 
 	<arg name="initial_reset" default="false"/>
+  <arg name="serial_flag" default="true"/>
+  <arg name="smooth_flag" default="true"/>
+  <arg name="mux_flag" default="true"/>
+  <arg name="joy_flag" default="true"/>
+  <arg name="ttc_flag" default="true"/>
+  
 	<include file="$(find md)/launch/md.launch">
 	</include>
 	<!-- <include file="$(find fw_ahrs)/launch/fw_imu.launch">
@@ -19,6 +25,31 @@
 	</include> -->
 	<!--include file="$(find realsense2_camera)/launch/rs_camera.launch"-->
 	<!--/include-->
+
+	  <include if="$(arg smooth_flag)" file="$(find yocs_velocity_smoother)/launch/standalone_nav.launch">
+  	</include>
+  	<include if="$(arg smooth_flag)" file="$(find yocs_velocity_smoother)/launch/standalone_joy.launch">
+  	</include>
+  	<include if="$(arg smooth_flag)" file="$(find yocs_velocity_smoother)/launch/standalone_teleop.launch">
+  	</include>
+  	<include if="$(arg smooth_flag)" file="$(find yocs_velocity_smoother)/launch/standalone_emer.launch">
+  	</include>
+  	<include if="$(arg smooth_flag)" file="$(find yocs_velocity_smoother)/launch/standalone_super_emer.launch">
+  	</include>
+	
+  	<include if="$(arg mux_flag)" file="$(find yocs_cmd_vel_mux)/launch/standalone.launch"/>
+
+    <group if="$(arg ttc_flag)">
+      <rosparam file="$(find fw_ttc)/config/fw_ttc_params.yaml" command="load"/>
+      <node name="fw_ttc_node" pkg="fw_ttc" type="fw_ttc_node" output="screen" respawn="false"/>
+    </group>
+
+	<node if="$(arg serial_flag)" pkg="rosserial_python" type="serial_node.py" name="serial_node" output="screen">
+      <param name="port"	value="/dev/STMJOY" />
+      <param name="baud"	value="57600" />
+    </node>
+
+	<node if="$(arg joy_flag)" pkg="freeway_joy" type="freeway_joy_node" name="freeway_joy_node" output="screen" respawn="false"/>
 
 	<include file="$(find fw_rev_04_init)/launch/fw_remote.launch">
 	</include>

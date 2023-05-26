@@ -1,0 +1,273 @@
+version: "2"
+
+# networks:
+#   my-net:
+#     external: true
+#     name: my-net
+#   ros_net:
+#     driver: bridge
+#     ipam:
+#       driver: default
+#       config:
+#         - subnet: 192.168.0.0/24
+#           gateway: 192.168.0.1
+
+services:
+  ros_core:
+    image: jaykor97/freeway:rev.04_jay_carto_wheelchair
+    container_name: ros_core
+    #hostname: ros_core
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - driver: nvidia
+            count: 1
+            capabilities: [gpu]
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    environment:
+      - "NVIDIA_DRIVER_CAPABILITIES=all"
+      - "DISPLAY=$DISPLAY"
+      - "QT_X11_NO_MITSHM=1"
+      - "XAUTHORITY=/tmp/.docker.xauth"
+      - "ROS_HOSTNAME=192.168.0.50"
+      #- "ROS_IP=192.168.0.50"
+      - "ROS_MASTER_URI=http://192.168.0.50:11311"
+    volumes:
+      - "~/docker_compose/docker_carto/data:/data"
+      - "~/docker_compose/docker_carto/map:/robot/map"
+      # - "~/docker_compose/docker_carto/param:/robot/param"
+      - "~/docker_compose/docker_carto/launch/fw_init:/home/freeway_rev04/src/fw_init"
+      - "~/docker_compose/docker_carto/launch/fw_cam:/home/freeway_rev04/src/fw_cam"
+      - "~/docker_compose/docker_carto/launch/fw_rtabmap:/home/freeway_rev04/src/fw_rtabmap"
+      - "~/docker_compose/docker_carto/launch/fw_navigation:/home/freeway_rev04/src/fw_navigation"
+      # - "/tmp/argus_socket:/tmp/argus_socket"
+      #- "/tmp/.X11-unix/:/tmp/.X11-unix:rw"
+      #- "/tmp/.docker.xauth:/tmp/.docker.xauth:rw"
+    command: ["/bin/zsh", "-c", "source /opt/ros/melodic/setup.zsh; source ~/.zshrc; roscore;"]
+    # networks:
+    #   ros_net:
+    #     ipv4_address: 192.168.0.50
+        # my-net:
+      #   ipv4_address: 192.168.0.10
+    network_mode: host
+    # ipc: host
+    #restart: always
+
+  fw_init_carto:
+    # build: ,,
+    image: jaykor97/freeway:rev.04_jay_carto_wheelchair
+    container_name: fw_init_carto
+    depends_on:
+        - ros_core
+    # networks:
+    #   ros_net:
+    #     ipv4_address: 192.168.0.50
+      # my-net:
+      #   ipv4_address: 192.168.0.10
+    network_mode: host
+    # ipc: host
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    privileged: true
+    environment:
+      - "ROS_HOSTNAME=192.168.0.50"
+      - "ROS_MASTER_URI=http://192.168.0.50:11311"
+    # command: zsh
+    volumes:
+      - "/dev/MD:/dev/MD"
+      - "/dev/STMJOY:/dev/STMJOY"
+      - "/dev/RPLIDARS2:/dev/RPLIDARS2"
+      - "~/docker_compose/docker_carto/data:/data"
+      - "~/docker_compose/docker_carto/map:/robot/map"
+      - "~/docker_compose/docker_carto/launch/freeway_rev03:/home/freeway_rev03/src/FREEWAY_AGX"
+      #  - "~/docker_compose/docker_carto/param:/robot/param"
+      - "~/docker_compose/docker_carto/launch/fw_init:/home/freeway_rev04/src/fw_init"
+      - "~/docker_compose/docker_carto/launch/fw_cam:/home/freeway_rev04/src/fw_cam"
+      - "~/docker_compose/docker_carto/launch/fw_ttc:/home/freeway_rev04/src/fw_ttc"
+      - "~/docker_compose/docker_carto/launch/fw_rtabmap:/home/freeway_rev04/src/fw_rtabmap"
+      - "~/docker_compose/docker_carto/launch/fw_navigation:/home/freeway_rev04/src/fw_navigation"
+      - "~/docker_compose/docker_carto/launch/yocs_velocity_smoother:/home/navigation_ws/src/navigation/yocs_velocity_smoother"
+      - "~/docker_compose/docker_carto/launch/yocs_cmd_vel_mux:/home/navigation_ws/src/navigation/yocs_cmd_vel_mux"
+      
+    command: ["/bin/zsh", "-c", "source /root/.zshrc; roslaunch --wait fw_rev_04_init fw_robot.launch;"]
+
+  fw_cam_carto:
+    # build: ,,
+    image: jaykor97/freeway:rev.04_jay_carto_wheelchair
+    container_name: fw_cam_carto
+    depends_on:
+        - ros_core
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t  
+    # networks:
+    #   ros_net:
+    #     ipv4_address: 192.168.0.12
+      # my-net:
+      #   ipv4_address: 192.168.0.10
+    network_mode: host
+    # ipc: host
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - driver: nvidia
+            count: 1
+            capabilities: [gpu]
+    privileged: true
+    environment:
+      - "NVIDIA_DRIVER_CAPABILITIES=all"
+      - "DISPLAY=$DISPLAY"
+      - "QT_X11_NO_MITSHM=1"
+      - "XAUTHORITY=/tmp/.docker.xauth"
+      - "ROS_HOSTNAME=192.168.0.50"
+      - "ROS_MASTER_URI=http://192.168.0.50:11311"
+    # command: zsh
+    volumes:
+      - "/dev:/dev"
+      - "~/docker_compose/docker_carto/data:/data"
+      - "~/docker_compose/docker_carto/map:/robot/map"
+      # - "~/docker_compose/docker_carto/param:/robot/param"
+      - "~/docker_compose/docker_carto/launch/fw_init:/home/freeway_rev04/src/fw_init"
+      - "~/docker_compose/docker_carto/launch/fw_cam:/home/freeway_rev04/src/fw_cam"
+      - "~/docker_compose/docker_carto/launch/fw_rtabmap:/home/freeway_rev04/src/fw_rtabmap"
+      - "~/docker_compose/docker_carto/launch/fw_navigation:/home/freeway_rev04/src/fw_navigation"
+    command: ["/bin/zsh", "-c", "source /root/.zshrc; roslaunch --wait fw_rev_04_cam launch_d455_ekf_wheel_imu_jay.launch initial_reset:=false;"]
+
+  # fw_carto:
+  #   # build: ,,
+  #   image: jaykor97/freeway:rev.04_jay_carto_wheelchair
+  #   container_name: fw_carto
+  #   depends_on:
+  #       - ros_core
+  #   # networks:
+  #   #   ros_net:
+  #   #     ipv4_address: 192.168.0.14
+  #     # my-net:
+  #     #   ipv4_address: 192.168.0.10
+  #   network_mode: host
+  #   # ipc: host
+  #   deploy:
+  #     resources:
+  #       reservations:
+  #         devices:
+  #         - driver: nvidia
+  #           count: 1
+  #           capabilities: [gpu]
+  #   stdin_open: true # docker run -i
+  #   tty: true        # docker run -t    
+  #   privileged: true
+  #   environment:
+  #     - "NVIDIA_DRIVER_CAPABILITIES=all"
+  #     - "DISPLAY=$DISPLAY"
+  #     - "QT_X11_NO_MITSHM=1"
+  #     - "XAUTHORITY=/tmp/.docker.xauth"
+  #     - "ROS_HOSTNAME=192.168.0.50"
+  #     - "ROS_MASTER_URI=http://192.168.0.50:11311"
+  #     - "MAP_TYPE=$MAP_TYPE"
+  #     - "MAP_FILE=$MAP_FILE"
+  #     - "MAP_MODE=$MAP_MODE"
+  #   # command: zsh
+  #   volumes:
+  #     - "/dev:/dev"
+  #     - "~/docker_compose/docker_carto/data:/data"
+  #     - "~/docker_compose/docker_carto/map:/robot/map"
+  #     # - "~/docker_compose/docker_carto/param:/robot/param"
+  #     - "~/docker_compose/docker_carto/launch/fw_init:/home/freeway_rev04/src/fw_init"
+  #     - "~/docker_compose/docker_carto/launch/fw_cam:/home/freeway_rev04/src/fw_cam"
+  #     - "~/docker_compose/docker_carto/launch/fw_rtabmap:/home/freeway_rev04/src/fw_rtabmap"
+  #     - "~/docker_compose/docker_carto/launch/fw_navigation:/home/freeway_rev04/src/fw_navigation"
+  #   command: ["/bin/zsh", "-c", "source /opt/ros/melodic/setup.zsh; source ~/.zshrc; roslaunch --wait fw_rev_04_navigation fw_navigation_carto.launch map_file:=/robot/map/${MAP_FILE}.yaml map_file_raw:=/robot/map/${MAP_FILE}_raw.yaml;"]
+
+  # fw_navigation_carto:
+  #   # build: ,,
+  #   image: jaykor97/freeway:rev.04_jay_carto_wheelchair
+  #   container_name: fw_navigation_carto
+  #   depends_on:
+  #       - ros_core
+  #   stdin_open: true # docker run -i
+  #   tty: true        # docker run -t    
+  #   # networks:
+  #   #   ros_net:
+  #   #     ipv4_address: 192.168.0.13
+  #     # my-net:
+  #     #   ipv4_address: 192.168.0.10
+  #   network_mode: host
+  #   # ipc: host
+  #   deploy:
+  #     resources:
+  #       reservations:
+  #         devices:
+  #         - driver: nvidia
+  #           count: 1
+  #           capabilities: [gpu]
+  #   privileged: true
+  #   environment:
+  #     - "NVIDIA_DRIVER_CAPABILITIES=all"
+  #     - "DISPLAY=$DISPLAY"
+  #     - "QT_X11_NO_MITSHM=1"
+  #     - "XAUTHORITY=/tmp/.docker.xauth"
+  #     - "ROS_HOSTNAME=192.168.0.50"
+  #     - "ROS_MASTER_URI=http://192.168.0.50:11311"
+  #   # command: zsh
+  #   volumes:
+  #     - "/dev:/dev"
+  #     - "~/docker_compose/docker_carto/data:/data"
+  #     - "~/docker_compose/docker_carto/map:/robot/map"
+  #     # - "~/docker_compose/docker_carto/param:/robot/param"
+  #     - "~/docker_compose/docker_carto/launch/fw_init:/home/freeway_rev04/src/fw_init"
+  #     - "~/docker_compose/docker_carto/launch/fw_ttc:/home/freeway_rev04/src/fw_ttc"
+  #     - "~/docker_compose/docker_carto/launch/fw_cam:/home/freeway_rev04/src/fw_cam"
+  #     - "~/docker_compose/docker_carto/launch/fw_rtabmap:/home/freeway_rev04/src/fw_rtabmap"
+  #     - "~/docker_compose/docker_carto/launch/fw_navigation:/home/freeway_rev04/src/fw_navigation"
+  #     - "~/docker_compose/docker_carto/launch/yocs_velocity_smoother:/home/navigation_ws/src/navigation/yocs_velocity_smoother"
+  #     - "~/docker_compose/docker_carto/launch/yocs_cmd_vel_mux:/home/navigation_ws/src/navigation/yocs_cmd_vel_mux"
+  #   command: ["/bin/zsh", "-c", "source /root/.zshrc; roslaunch --wait fw_rev_04_navigation fw_move_base_flex.launch move_base_flag:=true;"]
+
+  # fw_bt_carto:
+  #   # build: ,,
+  #   image: jaykor97/freeway:rev.04_jay_carto_wheelchair
+  #   container_name: fw_bt_carto
+  #   depends_on:
+  #       - ros_core
+  #   stdin_open: true # docker run -i
+  #   tty: true        # docker run -t    
+  #   # networks:
+  #   #   ros_net:
+  #   #     ipv4_address: 192.168.0.13
+  #     # my-net:
+  #     #   ipv4_address: 192.168.0.10
+  #   network_mode: host
+  #   # ipc: host
+  #   deploy:
+  #     resources:
+  #       reservations:
+  #         devices:
+  #         - driver: nvidia
+  #           count: 1
+  #           capabilities: [gpu]
+  #   privileged: true
+  #   environment:
+  #     - "NVIDIA_DRIVER_CAPABILITIES=all"
+  #     - "DISPLAY=$DISPLAY"
+  #     - "QT_X11_NO_MITSHM=1"
+  #     - "XAUTHORITY=/tmp/.docker.xauth"
+  #     - "ROS_HOSTNAME=192.168.0.50"
+  #     - "ROS_MASTER_URI=http://192.168.0.50:11311"
+  #   # command: zsh
+  #   volumes:
+  #     - "/dev:/dev"
+  #     - "~/docker_compose/docker_carto/data:/data"
+  #     - "~/docker_compose/docker_carto/map:/robot/map"
+  #     # - "~/docker_compose/docker_carto/param:/robot/param"
+  #     - "~/docker_compose/docker_carto/launch/fw_init:/home/freeway_rev04/src/fw_init"
+  #     - "~/docker_compose/docker_carto/launch/fw_cam:/home/freeway_rev04/src/fw_cam"
+  #     # - "~/docker_compose/docker_carto/launch/fw_rtabmap:/home/freeway_rev04/src/fw_rtabmap"
+  #     - "~/docker_compose/docker_carto/launch/fw_navigation:/home/freeway_rev04/src/fw_navigation"
+  #     - "~/docker_compose/docker_carto/launch/fw_bt:/home/freeway_rev04/src/fw_bt"
+  #   command: ["/bin/zsh", "-c", "source /root/.zshrc; roslaunch --wait fw_bt bt_sample.launch;"]
+
+#export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/aarch64-linux-gnu/tegra
+
+
