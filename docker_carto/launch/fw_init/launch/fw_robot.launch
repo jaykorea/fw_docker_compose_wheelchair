@@ -7,6 +7,8 @@
 	</include> -->
 	<include file="$(find rplidar_ros)/launch/fw_rp_s2.launch">
 	</include>
+  <include file="$(find lakibeam1)/launch/fw_richbeam.launch">
+  </include>
   <!-- <include file="$(find fitxxx)/launch/akusense_lidar.launch">
   </include> -->
 	<!-- <include file="$(find ydlidar)/launch/fw_yd.launch">

@@ -1,6 +1,6 @@
 <launch>
     <node pkg="md" type="md_node" name="md_node" output="screen" respawn="false">
-        <param name = "diameter"         value = "248"/>
+        <param name = "diameter"         value = "246"/>
         <param name = "wheelLength"      value = "512"/>
         <param name = "reduction"        value = "30"/>
         <param name = "baudrate"         value = "57600"/>
@@ -12,8 +12,8 @@
         <param name = "halltype"         value = "8"/>
         <param name = "maxrpm"           value = "3000"/>
         <param name = "angleresolution"  value = "1"/>
-        <param name = "slowstart"        value = "75"/> <!-- 650 -->
-        <param name = "slowdown"         value = "20"/> <!-- 550 -->
+        <param name = "slowstart"        value = "120"/> <!-- 650 -->
+        <param name = "slowdown"         value = "100"/> <!-- 550 -->
     </node>
 
     <node pkg="md" type="vel_cmd_node" name="vel_cmd_node" output="screen" respawn="false">

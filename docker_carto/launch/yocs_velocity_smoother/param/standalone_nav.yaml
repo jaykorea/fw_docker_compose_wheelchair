@@ -3,19 +3,18 @@
 # - acceleration limits are just low enough to avoid jerking
 
 # Mandatory parameters
-speed_lim_v: 0.75
-speed_lim_w: 0.27
+speed_lim_v: 0.65
+speed_lim_w: 0.38
 
 accel_lim_v: 0.15
-accel_lim_w: 0.25
+accel_lim_w: 0.38
 
 # Optional parameters
-frequency: 15.0
-decel_factor: 2.5
-
+frequency: 20.0
+decel_factor: 1.5
 
 # Robot velocity feedback type:
 #  0 - none
 #  1 - odometry
 #  2 - end robot commands
-robot_feedback: 1
+robot_feedback: 2

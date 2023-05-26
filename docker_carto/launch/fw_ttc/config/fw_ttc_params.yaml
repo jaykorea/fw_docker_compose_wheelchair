@@ -1,14 +1,14 @@
-scan_topic: "scan_rp_filtered" # LiDAR topic for subscribe laser scan msg.
+scan_topic: "scan_richbeam" # LiDAR topic for subscribe laser scan msg.
 odom_topic: "odom_md" # odometry topic for calculating TTC.
 
 frequency: 30.0
 
-range_reversed: true # identify which LiDAR you use - specific lidar range data is reversed (e.g. rplidar).
+range_reversed: false # identify which LiDAR you use - specific lidar range data is reversed (e.g. rplidar).
 
 obstacle_deg: 3 # should satisfy at least 3 degree range data for detect front_obstacle
 
 ttc_time: 2.5 # minimum TTC time.
-ttc_deg: 2 # should satisfy at least 2 degree range data.
+ttc_deg: 3 # should satisfy at least 2 degree range data.
 
 signal_distance: 0.4 # minimum distance for to detect front obstacle in (m).
 signal_distance_teb: 0.2 # minimum distance for TEB to detect front obstacle in (m).
@@ -18,4 +18,4 @@ signal_release: 0.55 # release distance in (m).
 # angle_max: 3.14 # should correspond to the akusense driver launch parameter setting.
 
 detecting_deg: 120 # LiDAR detecting degree.
-detecting_deg_ttc: 100 # ttc detecting degree.
+detecting_deg_ttc: 90 # ttc detecting degree.
