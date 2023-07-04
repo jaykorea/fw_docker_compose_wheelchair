@@ -11,8 +11,8 @@
 	</include>
 	<!-- <include file="$(find fw_ahrs)/launch/fw_imu.launch">
 	</include> -->
-	<include file="$(find rplidar_ros)/launch/fw_rp_s2.launch">
-	</include>
+	<!-- <include file="$(find rplidar_ros)/launch/fw_rp_s2.launch">
+	</include> -->
   <include file="$(find lakibeam1)/launch/fw_richbeam.launch">
   </include>
   <!-- <include file="$(find fitxxx)/launch/akusense_lidar.launch">
@@ -20,9 +20,9 @@
 	<!-- <include file="$(find ydlidar)/launch/fw_yd.launch">
 	</include> -->
 	<!-- <include file="$(find rplidar_ros)/launch/fw_rp_a1.launch">
-	</include>
-	<include file="$(find ira_laser_tools)/launch/laserscan_multi_merger.launch">
 	</include> -->
+	<include file="$(find ira_laser_tools)/launch/laserscan_multi_merger.launch">
+	</include>
 	<!--include file="$(find realsense2_camera)/launch/rs_camera.launch"-->
 	<!--/include-->
 

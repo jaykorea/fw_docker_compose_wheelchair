@@ -9,7 +9,7 @@
     <arg name="configuration_basename" value="$(arg configuration_basename)"/>
 
     <arg name="imu_topic"  value="/imu/data"/>
-    <arg name="scan_topic" value="/scan_rp_filtered" />
+    <arg name="scan_topic" value="/scan_richbeam_merged" />
     <arg name="odom_topic" value="/odom_md"/>
   </include>
 

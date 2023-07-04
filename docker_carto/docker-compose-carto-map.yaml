@@ -31,9 +31,9 @@ services:
   #     - "DISPLAY=$DISPLAY"
   #     - "QT_X11_NO_MITSHM=1"
   #     - "XAUTHORITY=/tmp/.docker.xauth"
-  #     - "ROS_HOSTNAME=192.168.0.50"
-  #     # - "ROS_IP=192.168.0.50"
-  #     - "ROS_MASTER_URI=http://192.168.0.50:11311"
+  #     - "ROS_HOSTNAME=192.168.3.3"
+  #     # - "ROS_IP=192.168.3.3"
+  #     - "ROS_MASTER_URI=http://192.168.3.3:11311"
   #   volumes:
   #     - "/dev:/dev"
   #     - "~/docker_compose/docker_carto/data:/data"
@@ -49,7 +49,7 @@ services:
   #   command: ["/bin/zsh", "-c", "source /opt/ros/melodic/setup.zsh; source ~/.zshrc; roscore;"]
   #   # networks:
   #   #   ros_net:
-  #   #     ipv4_address: 192.168.0.50
+  #   #     ipv4_address: 192.168.3.3
   #       # my-net:
   #     #   ipv4_address: 192.168.0.10
   #   network_mode: host
@@ -64,7 +64,7 @@ services:
   #       - ros_core
   #   # networks:
   #   #   ros_net:
-  #   #     ipv4_address: 192.168.0.50
+  #   #     ipv4_address: 192.168.3.3
   #     # my-net:
   #     #   ipv4_address: 192.168.0.10
   #   network_mode: host
@@ -73,9 +73,9 @@ services:
   #   tty: true        # docker run -t
   #   privileged: true
   #   environment:
-  #       #- "ROS_IP=192.168.0.50"
-  #       - "ROS_HOSTNAME=192.168.0.50"
-  #       - "ROS_MASTER_URI=http://192.168.0.50:11311"
+  #       #- "ROS_IP=192.168.3.3"
+  #       - "ROS_HOSTNAME=192.168.3.3"
+  #       - "ROS_MASTER_URI=http://192.168.3.3:11311"
   #   # command: zsh
   #   volumes:
   #     - "/dev:/dev"
@@ -116,8 +116,8 @@ services:
   #     - "DISPLAY=$DISPLAY"
   #     - "QT_X11_NO_MITSHM=1"
   #     - "XAUTHORITY=/tmp/.docker.xauth"
-  #     - "ROS_HOSTNAME=192.168.0.50"
-  #     - "ROS_MASTER_URI=http://192.168.0.50:11311"
+  #     - "ROS_HOSTNAME=192.168.3.3"
+  #     - "ROS_MASTER_URI=http://192.168.3.3:11311"
   #   # command: zsh
   #   volumes:
   #     - "/dev:/dev"
@@ -158,8 +158,8 @@ services:
       - "DISPLAY=$DISPLAY"
       - "QT_X11_NO_MITSHM=1"
       - "XAUTHORITY=/tmp/.docker.xauth"
-      - "ROS_HOSTNAME=192.168.0.50"
-      - "ROS_MASTER_URI=http://192.168.0.50:11311"
+      - "ROS_HOSTNAME=192.168.3.3"
+      - "ROS_MASTER_URI=http://192.168.3.3:11311"
     # command: zsh
     volumes:
       - "/dev:/dev"
@@ -199,8 +199,8 @@ services:
       - "DISPLAY=$DISPLAY"
       - "QT_X11_NO_MITSHM=1"
       - "XAUTHORITY=/tmp/.docker.xauth"
-      - "ROS_HOSTNAME=192.168.0.50"
-      - "ROS_MASTER_URI=http://192.168.0.50:11311"
+      - "ROS_HOSTNAME=192.168.3.3"
+      - "ROS_MASTER_URI=http://192.168.3.3:11311"
     # command: zsh
     volumes:
       - "/dev:/dev"

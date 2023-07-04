@@ -16,7 +16,7 @@ controllers:
 
 TebLocalPlannerROS:
   odom_topic: /odom_md
-  map_frame: map # map
+  map_frame: odom_md_frame # map
   stop_on_obstacle: true
      
   # Trajectory

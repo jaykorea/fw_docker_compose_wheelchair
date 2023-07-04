@@ -1,4 +1,4 @@
-scan_topic: "scan_richbeam" # LiDAR topic for subscribe laser scan msg.
+scan_topic: "scan_richbeam_merged" # LiDAR topic for subscribe laser scan msg.
 odom_topic: "odom_md" # odometry topic for calculating TTC.
 
 frequency: 30.0

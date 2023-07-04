@@ -155,8 +155,8 @@ obstacle_aku_layer:
 obstacle_richbeam_layer:
   enabled: true
   track_unknown_space: false  
-  observation_sources: scan_richbeam
-  scan_richbeam: {sensor_frame: base_scan_richbeam, data_type: LaserScan, topic: scan_richbeam, obstacle_range: 6.0, raytrace_range: 8.0, marking: True, clearing: True, min_obstacle_height: 0.03, max_obstacle_height: 1.5, inf_is_valid: True}
+  observation_sources: scan_richbeam_merged
+  scan_richbeam_merged: {sensor_frame: base_scan_richbeam, data_type: LaserScan, topic: scan_richbeam_merged, obstacle_range: 6.0, raytrace_range: 8.0, marking: True, clearing: True, min_obstacle_height: 0.03, max_obstacle_height: 1.5, inf_is_valid: True}
 
 
 obstacle_3d_layer2:
